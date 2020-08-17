@@ -6,20 +6,31 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${sandbox_SOURCE_DIR}/cmake")
 set(BIN_DIR ${sandbox}/bin)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -std=c++17")
+if(APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -framework SDL2")
+  if(FRAMEWORKS_LOC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -F${FRAMEWORKS_LOC}")
+  endif()
+endif()
+
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 
-include_directories(/usr/include/SDL2 /usr/include/boost ${CMAKE_CURRENT_SOURCE_DIR})
+if(NOT SDL_HEADERS)
+  set(SDL_HEADERS "/usr/include/SDL2")
+endif()
+
+include_directories(${SDL_HEADERS} /usr/include/boost ${CMAKE_CURRENT_SOURCE_DIR})
 
 file(GLOB ROOT_SRC "src/*.cpp")
 file(GLOB ENGINE_SRC "src/engine/*.cpp")
+file(GLOB INPUT_SRC "src/engine/input/*.cpp")
 
-add_executable(sandbox ${ROOT_SRC} ${ENGINE_SRC})
+add_executable(sandbox ${ROOT_SRC} ${ENGINE_SRC} ${INPUT_SRC})
 
-if(MINGW)
-	target_link_libraries(sandbox /usr/local/lib/libSDL2.dll.a )
-else()
-	target_link_libraries(sandbox /usr/lib/libSDL2.so /usr/lib/libSDL2_image.so)
+if(NOT APPLE)
+  set(SDL_LIBS "/usr/lib/libSDL2.so /usr/lib/libSDL2_image.so")
 endif()
+target_link_libraries(sandbox ${SDL_LIBS})
 
 install(TARGETS sandbox RUNTIME DESTINATION ${BIN_DIR})

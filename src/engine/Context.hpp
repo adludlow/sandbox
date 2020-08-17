@@ -4,6 +4,7 @@
 #include <SDL.h>
 
 #include "Entity.hpp"
+#include "input/InputHandler.hpp"
 
 class Context {
   public:

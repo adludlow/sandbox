@@ -25,26 +25,3 @@ int Context::init(int width, int height) {
   }
   return 0;
 }
-
-int Context::run() {
-  running_ = true;
-
-  Timer fpsTimer;
-  Timer capTimer;
-  int countedFrames = 0;
-  fpsTimer.start();
-  while (running_) {
-    capTimer.start();
-    float avgFps = countedFrames / (fpsTimer.getTicks()/1000.f);
-
-    // RENDER
-
-    countedFrames++;
-    int frameTicks = capTimer.getTicks();
-    if (frameTicks < SCREEN_TICKS_PER_FRAME) {
-      SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);
-    }
-  }
-
-  return 0;
-}

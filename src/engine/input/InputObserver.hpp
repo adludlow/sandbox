@@ -2,6 +2,7 @@
 #define INPUTOBSERVER_HPP
 
 #include <vector>
+#include <string>
 
 #include "InputEvent.hpp"
 

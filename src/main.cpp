@@ -1,6 +1,8 @@
 #include <iostream>
 
 #include "engine/Context.hpp"
+#include "engine/GameLoop.hpp"
+#include "engine/input/SdlInputHandler.hpp"
 
 int main (int argc, char** argv) {
   if (argc != 3) {
@@ -17,7 +19,11 @@ int main (int argc, char** argv) {
     return 1;
   }
 
-  ctx.run();
+  std::unique_ptr<InputHandler> inputHandler = std::make_unique<SdlInputHandler>();
+  GameLoop gameLoop = GameLoop(inputHandler.get());
+  inputHandler->addObserver(&gameLoop);
+
+  gameLoop.run();
 
   return 0;
 }

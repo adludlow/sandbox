@@ -5,9 +5,9 @@
 #include <vector>
 #include <map>
 
-#include "ObservableInputHandler.hpp"
+#include "InputHandler.hpp"
 
-class SdlInputHandler: public ObservableInputHandler {
+class SdlInputHandler: public InputHandler {
   public:
     SdlInputHandler() {};
 

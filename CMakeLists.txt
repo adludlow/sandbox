@@ -29,7 +29,7 @@ file(GLOB INPUT_SRC "src/engine/input/*.cpp")
 add_executable(sandbox ${ROOT_SRC} ${ENGINE_SRC} ${INPUT_SRC})
 
 if(NOT APPLE)
-  set(SDL_LIBS "/usr/lib/libSDL2.so /usr/lib/libSDL2_image.so")
+  set(SDL_LIBS /usr/lib/libSDL2.so /usr/lib/libSDL2_image.so)
 endif()
 target_link_libraries(sandbox ${SDL_LIBS})
 

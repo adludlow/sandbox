@@ -20,7 +20,11 @@ if(NOT SDL_HEADERS)
   set(SDL_HEADERS "/usr/include/SDL2")
 endif()
 
-include_directories(${SDL_HEADERS} /usr/include/boost ${CMAKE_CURRENT_SOURCE_DIR})
+if(NOT BOOST_HEADERS)
+  set(BOOST_HEADERS "/usr/include/boost")
+endif()
+
+include_directories(${SDL_HEADERS}  ${BOOST_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR})
 
 file(GLOB ROOT_SRC "src/*.cpp")
 file(GLOB ENGINE_SRC "src/engine/*.cpp")

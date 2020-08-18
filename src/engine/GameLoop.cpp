@@ -35,10 +35,10 @@ int GameLoop::run() {
   while (running_) {
     capTimer.start();
     float avgFps = countedFrames / (fpsTimer.getTicks()/1000.f);
-
-    // RENDER
     
     inputHandler_->handleInput();
+
+    // RENDER
 
     countedFrames++;
     int frameTicks = capTimer.getTicks();

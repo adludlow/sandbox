@@ -1,8 +1,14 @@
-#include <boost/uuid/random_generator.hpp>
-#include <boost/uuid/uuid_io.hpp>
+#ifndef UTIL_HPP
+#define UTIL_HPP
+
+#include <boost/math/constants/constants.hpp>
 
 namespace util {
-  std::string uuid() {
-    return boost::uuids::to_string(boost::uuids::random_generator()());
-  }
+  std::string uuid();
+
+  double random( double min, double max );
+
+  const double pi = boost::math::constants::pi<double>();
 }
+
+#endif

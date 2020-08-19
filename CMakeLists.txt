@@ -24,13 +24,18 @@ if(NOT BOOST_HEADERS)
   set(BOOST_HEADERS "/usr/include/boost")
 endif()
 
-include_directories(${SDL_HEADERS}  ${BOOST_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR})
+if(NOT GLM_HEADERS)
+  set(GLM_HEADERS)
+endif()
+
+include_directories(${SDL_HEADERS} ${BOOST_HEADERS} ${GLM_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR})
 
 file(GLOB ROOT_SRC "src/*.cpp")
 file(GLOB ENGINE_SRC "src/engine/*.cpp")
 file(GLOB INPUT_SRC "src/engine/input/*.cpp")
+file(GLOB GEOM_SRC "src/engine/geom/*.cpp")
 
-add_executable(sandbox ${ROOT_SRC} ${ENGINE_SRC} ${INPUT_SRC})
+add_executable(sandbox ${ROOT_SRC} ${ENGINE_SRC} ${INPUT_SRC} ${GEOM_SRC})
 
 if(NOT APPLE)
   set(SDL_LIBS /usr/lib/libSDL2.so /usr/lib/libSDL2_image.so)

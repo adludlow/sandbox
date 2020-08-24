@@ -2,8 +2,11 @@
 #define CONTEXT_HPP
 
 #include <SDL.h>
+#include <memory>
+#include <vector>
+#include <unordered_map>
 
-#include "Entity.hpp"
+#include "component/component.hpp"
 #include "input/InputHandler.hpp"
 
 class Context {
@@ -13,7 +16,8 @@ class Context {
     int init(int width, int height);
 
   private:
-    Entity* entities_;
+    std::vector<int> entities_;
+    std::unordered_map<int, std::vector<std::unique_ptr<component::component>>> components_;    
 
     SDL_Renderer* renderer_;
 };

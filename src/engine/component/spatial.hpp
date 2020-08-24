@@ -1,11 +1,15 @@
-#include "../geom/Vector.hpp"
+#ifndef SPATIAL_HPP
+#define SPATIAL_HPP
+
+#include <vector>
+
+#include "../geom/Polygon.hpp"
 
 namespace component {
-  struct spatial {
-    coord_t x,
-    coord_t y,
-    coord_t z,
-
-
-  }
+  struct spatial : public component {
+    Vector vector;
+    std::vector<Polygon> polygons;
+  };
 }
+
+#endif

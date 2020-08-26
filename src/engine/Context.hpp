@@ -14,10 +14,12 @@ class Context {
     Context() {};
 
     int init(int width, int height);
+    int createEntity();
+    int addComponent
 
   private:
     std::vector<int> entities_;
-    std::unordered_map<int, std::vector<std::unique_ptr<component::component>>> components_;    
+    std::unordered_map<int, std::vector<std::unique_ptr<component::component>>> components_;  
 
     SDL_Renderer* renderer_;
 };

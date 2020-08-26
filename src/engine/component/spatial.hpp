@@ -6,9 +6,14 @@
 #include "../geom/Polygon.hpp"
 
 namespace component {
-  struct spatial : public component {
-    Vector vector;
-    std::vector<Polygon> polygons;
+  class Spatial {
+    public:
+      Spatial(Vector location) : locationVector_(location) {};
+      void addPolygon(const Polygon& p);
+      void addPolygons(const std::vector<Polygon>& p);
+    private:
+      Vector locationVector_;
+      std::vector<Polygon> polygons_;
   };
 }
 

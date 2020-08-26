@@ -44,3 +44,15 @@ endif()
 target_link_libraries(sandbox ${SDL_LIBS})
 
 install(TARGETS sandbox RUNTIME DESTINATION ${BIN_DIR})
+
+# Testing
+add_library(Catch INTERFACE)
+target_include_directories(Catch INTERFACE src/test)
+add_executable(
+  engineTest
+  src/test/ComponentArray_test.cc
+)
+target_link_libraries(engineTest PUBLIC Catch)
+
+enable_testing()
+add_test(NAME EngineTests COMMAND engineTest)

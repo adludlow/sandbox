@@ -26,10 +26,36 @@ class ComponentArray : public IComponentArray {
       ++size_;
     }
 
-    void removeComponent(Entity entity);
-    T& getComponent(Entity entity);
+    void removeComponent(Entity entity) {
+      assert(entityToIndexMap_.find(entity) != entityToIndexMap_.end() && "Attempted to remove component that does not exist.");
 
-    void entityDeleted(Entity entity) override {}
+      // Copy last element to deleted elements place in array. This maintains array density.
+      size_t indexOfRemovedElement = entityToIndexMap_[entity];
+      size_t indexOfLastElement = size_ - 1;
+      componentArray_[indexOfRemovedElement] = componentArray_[indexOfLastElement];
+
+      // Update maps to reflect changes above.
+      Entity entityOfLastElement = indexToEntityMap_[indexOfLastElement];
+      entityToIndexMap_[entityOfLastElement] = indexOfRemovedElement;
+      indexToEntityMap_[indexOfRemovedElement] = entityOfLastElement;
+
+      entityToIndexMap_.erase(entity);
+      indexToEntityMap_.erase(indexOfLastElement);
+
+      --size_;
+    }
+
+    T& getComponent(Entity entity) {
+      assert(entityToIndexMap_.find(entity) != entityToIndexMap_.end() && "Attempted to retrieve component that does not exist.");
+
+      return componentArray_[entityToIndexMap_[entity]];
+    }
+
+    void entityDeleted(Entity entity) override {
+      if (entityToIndexMap_.find(entity) != entityToIndexMap_.end()) {
+        removeComponent(entity);
+      }
+    }
 
     size_t size() {
       return size_;

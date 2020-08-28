@@ -50,7 +50,8 @@ add_library(Catch INTERFACE)
 target_include_directories(Catch INTERFACE src/test)
 add_executable(
   engineTest
-  src/test/ComponentArray_test.cc
+  src/engine/core/test/ComponentArray_test.cc
+  src/engine/core/test/ComponentManager_test.cc
 )
 target_link_libraries(engineTest PUBLIC Catch)
 

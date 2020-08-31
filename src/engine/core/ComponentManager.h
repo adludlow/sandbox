@@ -6,7 +6,7 @@
 #include <assert.h>
 
 #include "types.h"
-#include "ComponentArray.h"
+#include "PackedComponentArray.h"
 
 class ComponentManager {
   public:
@@ -18,7 +18,7 @@ class ComponentManager {
 
       // Add new component to maps
       componentTypes_.insert({ typeName, nextComponentType_ });
-      componentArrays_.insert({ typeName, std::make_unique<ComponentArray<T>>() });
+      componentArrays_.insert({ typeName, std::make_shared<PackedComponentArray<T>>() });
 
       ++nextComponentType_;
     }
@@ -56,15 +56,15 @@ class ComponentManager {
 
   private:
     std::unordered_map<const char*, ComponentType> componentTypes_ {};
-    std::unordered_map<const char*, std::unique_ptr<IComponentArray>> componentArrays_ {};
+    std::unordered_map<const char*, std::shared_ptr<ComponentArray>> componentArrays_ {};
     ComponentType nextComponentType_ {};
 
     template<typename T>
-    std::unique_ptr<ComponentArray<T>> GetComponentArray() {
+    std::shared_ptr<ComponentArray> GetComponentArray() {
       const char* typeName = typeid(T).name();
 
       assert(componentTypes_.find(typeName) != componentTypes_.end() && "Requested unregistered component type.");
 
-      return std::static_pointer_cast<ComponentArray<T>>(componentArrays_[typeName]);
+      return std::static_pointer_cast<ComponentArray>(componentArrays_[typeName]);
     }
 };

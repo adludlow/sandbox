@@ -14,7 +14,6 @@ SCENARIO("Component are registered with a ComponentManager", "[ComponentManager]
       
       THEN("The component type can be retrieved from the ComponentManager") {
         ComponentType ct = componentManager.getComponentType<DummyComponent>();
-        std::cout << ct << std::endl;
         REQUIRE(1 == 1);
       }
     }

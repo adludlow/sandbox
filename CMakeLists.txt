@@ -30,11 +30,11 @@ endif()
 
 include_directories(${SDL_HEADERS} ${BOOST_HEADERS} ${GLM_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR})
 
-file(GLOB ROOT_SRC "src/*.cpp")
-file(GLOB ENGINE_SRC "src/engine/*.cpp")
-file(GLOB INPUT_SRC "src/engine/input/*.cpp")
-file(GLOB GEOM_SRC "src/engine/geom/*.cpp")
-file(GLOB COMPONENT_SRC "src/engine/component/*.cpp")
+#file(GLOB ROOT_SRC "src/*.cpp")
+#file(GLOB ENGINE_SRC "src/engine/*.cpp")
+#file(GLOB INPUT_SRC "src/engine/input/*.cpp")
+#file(GLOB GEOM_SRC "src/engine/geom/*.cpp")
+#file(GLOB COMPONENT_SRC "src/engine/component/*.cpp")
 
 add_executable(sandbox ${ROOT_SRC} ${ENGINE_SRC} ${INPUT_SRC} ${GEOM_SRC} ${COMPONENT_SRC})
 

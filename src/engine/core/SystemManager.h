@@ -36,6 +36,20 @@ class SystemManager {
       }
     }
 
+    void entitySignatureChanged(Entity entity, Signature entitySignature) {
+      // Notify each system that an entity's signature changed
+      for (auto const& pair : systems_) {
+        auto const& type = pair.first;
+        auto const& system = pair.second;
+        auto const& systemSignature = signatures_[type];
+
+        // Entity signature matches system signature - insert into set
+        if ((entitySignature & systemSignature) == systemSignature) {
+          system->entities().insert
+        }
+      }
+    }
+
   private:
     std::unordered_map<const char*, Signature> signatures_{};
     std::unordered_map<const char*, std::shared_ptr<System>> systems_{};

@@ -53,6 +53,7 @@ add_executable(
   src/engine/core/test/ComponentArray_test.cc
   src/engine/core/test/ComponentManager_test.cc
   src/engine/core/test/EntityManager_test.cc
+  src/engine/core/test/SystemManager_test.cc
 )
 target_link_libraries(engineTest PUBLIC Catch)
 

@@ -1,8 +1,9 @@
 #include <iostream>
 
-#include "engine/Context.hpp"
-#include "engine/GameLoop.hpp"
-#include "engine/input/SdlInputHandler.hpp"
+#include "engine/core/Context.h"
+#include "engine/components/Transform.h"
+
+Context ctx;
 
 int main (int argc, char** argv) {
   if (argc != 3) {
@@ -13,7 +14,11 @@ int main (int argc, char** argv) {
   int width = std::stoi(argv[1]);
   int height = std::stoi(argv[2]); 
 
-  Context ctx = Context();
+  ctx.init();
+
+  ctx.registerComponent<Transform>();
+
+  /*
   if (ctx.init(width, height) != 0) {
     std::cout << "Failed to initialise sandbox context." << std::endl;
     return 1;
@@ -24,6 +29,7 @@ int main (int argc, char** argv) {
   inputHandler->addObserver(&gameLoop);
 
   gameLoop.run();
+  */
 
   return 0;
 }

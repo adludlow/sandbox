@@ -36,7 +36,10 @@ include_directories(${SDL_HEADERS} ${BOOST_HEADERS} ${GLM_HEADERS} ${CMAKE_CURRE
 #file(GLOB GEOM_SRC "src/engine/geom/*.cpp")
 #file(GLOB COMPONENT_SRC "src/engine/component/*.cpp")
 
-add_executable(sandbox ${ROOT_SRC} ${ENGINE_SRC} ${INPUT_SRC} ${GEOM_SRC} ${COMPONENT_SRC})
+add_executable(
+  sandbox
+  src/main.cpp
+)
 
 if(NOT APPLE)
   set(SDL_LIBS /usr/lib/libSDL2.so /usr/lib/libSDL2_image.so)

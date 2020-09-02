@@ -6,9 +6,22 @@
 #include "../SystemManager.h"
 
 class DummySystem : public System {
-  std::set<Entity> entities() {
-    return std::set<Entity>();
-  };
+  public:
+    std::set<Entity> entities() override {
+      return entities_;
+    };
+
+    void addEntity(Entity entity) override {
+      entities_.insert(entity);
+    }
+
+    void deleteEntity(Entity entity) override {
+      entities_.erase(entity);
+    }
+
+  private:
+    std::set<Entity> entities_{};
+
 };
 
 SCENARIO("Systems are registered with the SystemManager") {

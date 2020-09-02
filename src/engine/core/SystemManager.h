@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "types.h"
+#include "System.h"
 
 class SystemManager {
   public:
@@ -28,11 +29,10 @@ class SystemManager {
       signatures_.insert({ typeName, signature });
     }
 
-    template<typename T>
-    void entityDestroyed(Entity entity) {
+    void entityDeleted(Entity entity) {
       for (auto const& pair : systems_) {
         auto const& system = pair.second;
-        system->entities().erase(entity);
+        system->deleteEntity(entity);
       }
     }
 
@@ -45,7 +45,9 @@ class SystemManager {
 
         // Entity signature matches system signature - insert into set
         if ((entitySignature & systemSignature) == systemSignature) {
-          system->entities().insert
+          system->addEntity(entity);
+        } else {
+          system->deleteEntity(entity);
         }
       }
     }

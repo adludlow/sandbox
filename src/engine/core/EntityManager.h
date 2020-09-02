@@ -24,7 +24,7 @@ class EntityManager {
       return id;
     }
 
-    void destroyEntity(Entity entity) {
+    void deleteEntity(Entity entity) {
       assert(entity < MAX_ENTITIES && "Entitiy out of range.");
 
       signatures_[entity].reset();

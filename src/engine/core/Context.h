@@ -58,6 +58,11 @@ class Context {
       return componentManager_->getComponent<T>(entity);
     }
 
+    template<typename T>
+    ComponentType getComponentType() {
+      return componentManager_->getComponentType<T>();
+    }
+
     // System
     template<typename T>
     std::shared_ptr<T> registerSystem() {

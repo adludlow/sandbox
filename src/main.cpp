@@ -1,7 +1,11 @@
 #include <iostream>
 
+#include <SDL.h>
+
 #include "engine/core/Context.h"
 #include "engine/components/Transform.h"
+#include "engine/components/Geometry.h"
+#include "engine/systems/RenderSystem.h"
 
 Context ctx;
 
@@ -17,7 +21,36 @@ int main (int argc, char** argv) {
   ctx.init();
 
   ctx.registerComponent<Transform>();
+  ctx.registerComponent<Geometry>();
 
+  auto renderSystem = ctx.registerSystem<RenderSystem>();
+  Signature signature;
+  signature.set(ctx.getComponentType<Transform>());
+  signature.set(ctx.getComponentType<Geometry>());
+  ctx.setSystemSignature<RenderSystem>(signature);
+
+
+  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    printf("SDL could not initialise. SDL_Error: %s\n", SDL_GetError());
+    return 1;
+  }
+  SDL_Window* window = SDL_CreateWindow(
+    "SDL_Window",
+    SDL_WINDOWPOS_UNDEFINED,
+    SDL_WINDOWPOS_UNDEFINED,
+    width,
+    height,
+    SDL_WINDOW_SHOWN
+  );
+  if (window == nullptr) {
+    printf("Window could not be created. SDL_Error: %s\n", SDL_GetError());
+    return 2;
+  }
+  SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+  if (renderer == nullptr) {
+    printf("Renderer could not be created. SDL Error: %s\n", SDL_GetError());
+    return 3;
+  }
   /*
   if (ctx.init(width, height) != 0) {
     std::cout << "Failed to initialise sandbox context." << std::endl;

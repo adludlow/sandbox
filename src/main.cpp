@@ -18,18 +18,6 @@ int main (int argc, char** argv) {
   int width = std::stoi(argv[1]);
   int height = std::stoi(argv[2]); 
 
-  ctx.init();
-
-  ctx.registerComponent<Transform>();
-  ctx.registerComponent<Geometry>();
-
-  auto renderSystem = ctx.registerSystem<RenderSystem>();
-  Signature signature;
-  signature.set(ctx.getComponentType<Transform>());
-  signature.set(ctx.getComponentType<Geometry>());
-  ctx.setSystemSignature<RenderSystem>(signature);
-
-
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     printf("SDL could not initialise. SDL_Error: %s\n", SDL_GetError());
     return 1;
@@ -51,6 +39,40 @@ int main (int argc, char** argv) {
     printf("Renderer could not be created. SDL Error: %s\n", SDL_GetError());
     return 3;
   }
+
+  ctx.init();
+
+  ctx.registerComponent<Transform>();
+  ctx.registerComponent<Geometry>();
+
+  auto renderSystem = ctx.registerSystem<RenderSystem>();
+  Signature signature;
+  signature.set(ctx.getComponentType<Transform>());
+  signature.set(ctx.getComponentType<Geometry>());
+  ctx.setSystemSignature<RenderSystem>(signature);
+
+  renderSystem->init(renderer);
+
+  Entity player = ctx.createEntity();
+  ctx.addComponent<Transform>(
+    player,
+    Transform {
+      .position = glm::vec3(width/2, height/2, 0.0f),
+      .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
+      .scale = glm::vec3(1.0f, 1.0f, 1.0f)
+    }
+  );
+  ctx.addComponent<Geometry>(
+    player,
+    Geometry  {
+      .vertices = {
+        glm::vec3(-1.0f, -1.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::vec3(1.0f, -1.0f, 0.0f)
+      }
+    }
+  );
+
   /*
   if (ctx.init(width, height) != 0) {
     std::cout << "Failed to initialise sandbox context." << std::endl;

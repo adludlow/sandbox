@@ -34,17 +34,17 @@ class ComponentManager {
 
     template<typename T>
     void addComponent(Entity entity, T component) {
-      GetComponentArray<T>()->addComponent(entity, component);
+      getComponentArray<T>()->addComponent(entity, component);
     }
 
     template<typename T>
     void removeComponent(Entity entity) {
-      GetComponentArray<T>()->removeComponent(entity);
+      getComponentArray<T>()->removeComponent(entity);
     }
 
     template<typename T>
     T& getComponent(Entity entity) {
-      return GetComponentArray<T>()->getComponent(entity);
+      return getComponentArray<T>()->getComponent(entity);
     }
 
     void entityDeleted(Entity entity) {
@@ -60,11 +60,11 @@ class ComponentManager {
     ComponentType nextComponentType_ {};
 
     template<typename T>
-    std::shared_ptr<ComponentArray> GetComponentArray() {
+    std::shared_ptr<PackedComponentArray<T>> getComponentArray() {
       const char* typeName = typeid(T).name();
 
       assert(componentTypes_.find(typeName) != componentTypes_.end() && "Requested unregistered component type.");
 
-      return std::static_pointer_cast<ComponentArray>(componentArrays_[typeName]);
+      return std::static_pointer_cast<PackedComponentArray<T>>(componentArrays_[typeName]);
     }
 };

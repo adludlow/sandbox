@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL.h>
+
 #include "../core/System.h"
 
 class RenderSystem : public System {
@@ -15,7 +17,16 @@ class RenderSystem : public System {
       entities_.erase(entity);
     }
 
+    void init(SDL_Renderer* renderer) {
+      renderer_ = renderer;
+    }
+
+    void update() {
+
+    }
+
   private:
     std::set<Entity> entities_{};
+    SDL_Renderer* renderer_;
 };
 

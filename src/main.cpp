@@ -3,11 +3,13 @@
 #include <SDL.h>
 
 #include "engine/core/Context.h"
+#include "engine/core/GameLoop.h"
 #include "engine/components/Transform.h"
 #include "engine/components/Geometry.h"
 #include "engine/systems/RenderSystem.h"
+#include "engine/core/input/SdlInputHandler.h"
 
-Context ctx;
+std::shared_ptr<Context> ctx = std::make_shared<Context>();
 
 int main (int argc, char** argv) {
   if (argc != 3) {
@@ -40,21 +42,23 @@ int main (int argc, char** argv) {
     return 3;
   }
 
-  ctx.init();
+  ctx->init();
+  auto inputHandler = std::make_shared<SdlInputHandler>();
+  ctx->registerInputHandler(inputHandler);
 
-  ctx.registerComponent<Transform>();
-  ctx.registerComponent<Geometry>();
+  ctx->registerComponent<Transform>();
+  ctx->registerComponent<Geometry>();
 
-  auto renderSystem = ctx.registerSystem<RenderSystem>();
+  auto renderSystem = ctx->registerSystem<RenderSystem>();
   Signature signature;
-  signature.set(ctx.getComponentType<Transform>());
-  signature.set(ctx.getComponentType<Geometry>());
-  ctx.setSystemSignature<RenderSystem>(signature);
+  signature.set(ctx->getComponentType<Transform>());
+  signature.set(ctx->getComponentType<Geometry>());
+  ctx->setSystemSignature<RenderSystem>(signature);
 
   renderSystem->init(renderer);
 
-  Entity player = ctx.createEntity();
-  ctx.addComponent<Transform>(
+  Entity player = ctx->createEntity();
+  ctx->addComponent<Transform>(
     player,
     Transform {
       .position = glm::vec3(width/2, height/2, 0.0f),
@@ -62,7 +66,7 @@ int main (int argc, char** argv) {
       .scale = glm::vec3(1.0f, 1.0f, 1.0f)
     }
   );
-  ctx.addComponent<Geometry>(
+  ctx->addComponent<Geometry>(
     player,
     Geometry  {
       .vertices = {
@@ -73,8 +77,13 @@ int main (int argc, char** argv) {
     }
   );
 
+  auto gameLoop = GameLoop(inputHandler, ctx);
+  inputHandler->addObserver(&gameLoop);
+
+  gameLoop.run();
+
   /*
-  if (ctx.init(width, height) != 0) {
+  if (ctx->init(width, height) != 0) {
     std::cout << "Failed to initialise sandbox context." << std::endl;
     return 1;
   }

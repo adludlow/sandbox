@@ -5,6 +5,7 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "SystemManager.h"
+#include "./input/InputHandler.h"
 
 class Context {
   public:
@@ -74,8 +75,17 @@ class Context {
       systemManager_->setSignature<T>(signature);
     }
 
+    void registerInputHandler(std::shared_ptr<InputHandler> inputHandler) {
+      inputHandler_ = inputHandler;
+    }
+
+    void update(float dt) {
+      systemManager_->update(dt);
+    }
+
   private:
     std::unique_ptr<ComponentManager> componentManager_;
     std::unique_ptr<EntityManager> entityManager_;
     std::unique_ptr<SystemManager> systemManager_;
+    std::shared_ptr<InputHandler> inputHandler_;
 };

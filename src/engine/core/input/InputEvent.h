@@ -1,5 +1,4 @@
-#ifndef INPUTEVENT_HPP
-#define INPUTEVENT_HPP
+#pragma once
 
 enum class InputEvent {
   MoveForwards,
@@ -12,5 +11,3 @@ enum class InputEvent {
   StopShoot,
   QuitToDesktop
 };
-
-#endif

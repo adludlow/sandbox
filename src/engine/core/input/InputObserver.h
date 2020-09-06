@@ -1,10 +1,9 @@
-#ifndef INPUTOBSERVER_HPP
-#define INPUTOBSERVER_HPP
+#pragma once
 
 #include <vector>
 #include <string>
 
-#include "InputEvent.hpp"
+#include "InputEvent.h"
 
 class InputObserver {
   public:
@@ -13,5 +12,3 @@ class InputObserver {
     virtual void onNotifyInput(const std::vector<InputEvent>& events) = 0;
     virtual std::string id() = 0;
 };
-
-#endif

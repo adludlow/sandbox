@@ -1,5 +1,4 @@
-#ifndef UTIL_HPP
-#define UTIL_HPP
+#pragma once
 
 #include <boost/math/constants/constants.hpp>
 
@@ -10,5 +9,3 @@ namespace util {
 
   const double pi = boost::math::constants::pi<double>();
 }
-
-#endif

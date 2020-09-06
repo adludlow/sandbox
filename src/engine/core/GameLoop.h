@@ -4,11 +4,12 @@
 #include <vector>
 #include <string>
 
-#include "input/InputHandler.hpp"
+#include "input/InputHandler.h"
+#include "Context.h"
 
 class GameLoop: public InputObserver {
   public:
-    GameLoop(InputHandler* inputHandler);
+    GameLoop(std::shared_ptr<InputHandler> inputHandler, std::shared_ptr<Context> ctx);
 
     const int SCREEN_FPS = 60;
     const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
@@ -20,7 +21,8 @@ class GameLoop: public InputObserver {
   private:
     bool running_;
     std::string id_;
-    InputHandler* inputHandler_;
+    std::shared_ptr<InputHandler> inputHandler_;
+    std::shared_ptr<Context> gameContext_;
 };
 
 #endif

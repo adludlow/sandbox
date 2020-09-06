@@ -2,8 +2,8 @@
 #include <map>
 #include <SDL.h>
 
-#include "SdlInputHandler.hpp"
-#include "InputEvent.hpp"
+#include "SdlInputHandler.h"
+#include "InputEvent.h"
 
 void SdlInputHandler::addObserver(InputObserver* observer) {
   if (observer != nullptr) {
@@ -37,6 +37,7 @@ void SdlInputHandler::handleInput() {
     events.push_back(InputEvent::Shoot);
   }
   while (SDL_PollEvent(&e) != 0) {
+    //std::cout << e.type << std::endl;
     switch (e.type) {
       case SDL_QUIT:
         events.push_back(InputEvent::QuitToDesktop);

@@ -19,6 +19,10 @@ class DummySystem : public System {
       entities_.erase(entity);
     }
 
+    void update(float dt) override {
+
+    }
+
   private:
     std::set<Entity> entities_{};
 

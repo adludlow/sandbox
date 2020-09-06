@@ -52,6 +52,12 @@ class SystemManager {
       }
     }
 
+    void update(float dt) {
+      for (auto s : systems_) {
+        s.second->update(dt);
+      }
+    }
+
   private:
     std::unordered_map<const char*, Signature> signatures_{};
     std::unordered_map<const char*, std::shared_ptr<System>> systems_{};

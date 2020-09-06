@@ -1,7 +1,6 @@
-#ifndef INPUTHANDLER_HPP
-#define INPUTHANDLER_HPP
+#pragma once
 
-#include "InputObserver.hpp"
+#include "InputObserver.h"
 
 class InputHandler {
   public:
@@ -12,5 +11,3 @@ class InputHandler {
     virtual void addObserver(InputObserver* observer) = 0;
     virtual void removeObserver(InputObserver* observer) = 0;
 };
-
-#endif

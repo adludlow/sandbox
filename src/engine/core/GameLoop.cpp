@@ -1,11 +1,16 @@
 #include <SDL.h>
+#include <iostream>
 
-#include "GameLoop.hpp"
-#include "Timer.hpp"
-#include "util.hpp"
+#include "GameLoop.h"
+#include "../Timer.h"
+#include "../util.h"
 
-GameLoop::GameLoop(InputHandler* inputHandler) {
+GameLoop::GameLoop(
+  std::shared_ptr<InputHandler> inputHandler,
+  std::shared_ptr<Context> ctx
+) {
   inputHandler_ = inputHandler;
+  gameContext_ = ctx;
   id_ = util::uuid();
 }
 
@@ -38,8 +43,7 @@ int GameLoop::run() {
     
     inputHandler_->handleInput();
 
-    // RENDER
-
+    gameContext_->update(capTimer.getTicks());
     countedFrames++;
     int frameTicks = capTimer.getTicks();
     if (frameTicks < SCREEN_TICKS_PER_FRAME) {

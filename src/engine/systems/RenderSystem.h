@@ -1,8 +1,14 @@
 #pragma once
 
 #include <SDL.h>
+#include <iostream>
 
+#include "../core/Context.h"
 #include "../core/System.h"
+#include "../components/Transform.h"
+#include "../components/Geometry.h"
+
+extern std::shared_ptr<Context> ctx;
 
 class RenderSystem : public System {
   public:
@@ -21,8 +27,16 @@ class RenderSystem : public System {
       renderer_ = renderer;
     }
 
-    void update() {
+    void update(float dt) override {
+      SDL_SetRenderDrawColor(renderer_, 0, 0, 0, SDL_ALPHA_OPAQUE);
+      SDL_RenderClear(renderer_);
+      SDL_SetRenderDrawColor(renderer_, 255, 255, 255, SDL_ALPHA_OPAQUE);
+      for (auto const& entity : entities_) {
+        auto& transform = ctx->getComponent<Transform>(entity);
+        auto& geometry = ctx->getComponent<Geometry>(entity);
 
+      }
+      SDL_RenderPresent(renderer_);
     }
 
   private:

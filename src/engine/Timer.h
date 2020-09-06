@@ -1,5 +1,4 @@
-#ifndef TIMER_HPP
-#define TIMER_HPP
+#pragma once
 
 class Timer {
   public:
@@ -14,5 +13,3 @@ class Timer {
     unsigned int startTicks_;
     bool started_;
 };
-
-#endif

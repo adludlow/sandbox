@@ -30,15 +30,13 @@ endif()
 
 include_directories(${SDL_HEADERS} ${BOOST_HEADERS} ${GLM_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR})
 
-#file(GLOB ROOT_SRC "src/*.cpp")
-#file(GLOB ENGINE_SRC "src/engine/*.cpp")
-#file(GLOB INPUT_SRC "src/engine/input/*.cpp")
-#file(GLOB GEOM_SRC "src/engine/geom/*.cpp")
-#file(GLOB COMPONENT_SRC "src/engine/component/*.cpp")
-
 add_executable(
   sandbox
   src/main.cpp
+  src/engine/core/input/SdlInputHandler.cpp
+  src/engine/util.cpp
+  src/engine/Timer.cpp
+  src/engine/core/GameLoop.cpp
 )
 
 if(NOT APPLE)

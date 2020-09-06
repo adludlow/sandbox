@@ -1,11 +1,10 @@
-#ifndef SDLINPUTHANDLER_HPP
-#define SDLINPUTHANDLER_HPP
+#pragma once
 
 #include <memory>
 #include <vector>
 #include <map>
 
-#include "InputHandler.hpp"
+#include "InputHandler.h"
 
 class SdlInputHandler: public InputHandler {
   public:
@@ -19,5 +18,3 @@ class SdlInputHandler: public InputHandler {
   private:
     std::map<std::string, InputObserver*> observers;
 };
-
-#endif

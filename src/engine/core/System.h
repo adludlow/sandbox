@@ -10,4 +10,5 @@ class System {
     virtual std::set<Entity> entities() = 0;
     virtual void addEntity(Entity entity) = 0;
     virtual void deleteEntity(Entity entity) = 0;
+    virtual void update(float dt) = 0;
 };

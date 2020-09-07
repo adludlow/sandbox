@@ -6,7 +6,7 @@
 #include "engine/core/GameLoop.h"
 #include "engine/components/Transform.h"
 #include "engine/components/Geometry.h"
-#include "engine/systems/RenderSystem.h"
+#include "engine/systems/SdlRenderSystem.h"
 #include "engine/core/input/SdlInputHandler.h"
 
 std::shared_ptr<Context> ctx = std::make_shared<Context>();
@@ -49,11 +49,11 @@ int main (int argc, char** argv) {
   ctx->registerComponent<Transform>();
   ctx->registerComponent<Geometry>();
 
-  auto renderSystem = ctx->registerSystem<RenderSystem>();
+  auto renderSystem = ctx->registerSystem<SdlRenderSystem>();
   Signature signature;
   signature.set(ctx->getComponentType<Transform>());
   signature.set(ctx->getComponentType<Geometry>());
-  ctx->setSystemSignature<RenderSystem>(signature);
+  ctx->setSystemSignature<SdlRenderSystem>(signature);
 
   renderSystem->init(renderer);
 
@@ -63,7 +63,7 @@ int main (int argc, char** argv) {
     Transform {
       .position = glm::vec3(width/2, height/2, 0.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-      .scale = glm::vec3(1.0f, 1.0f, 1.0f)
+      .scale = glm::vec3(10.0f, 10.0f, 1.0f)
     }
   );
   ctx->addComponent<Geometry>(

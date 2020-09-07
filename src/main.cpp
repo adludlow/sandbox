@@ -7,6 +7,7 @@
 #include "engine/components/Transform.h"
 #include "engine/components/Geometry.h"
 #include "engine/systems/SdlRenderSystem.h"
+#include "engine/systems/PlayerControlSystem.h"
 #include "engine/core/input/SdlInputHandler.h"
 
 std::shared_ptr<Context> ctx = std::make_shared<Context>();

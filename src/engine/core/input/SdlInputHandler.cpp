@@ -37,7 +37,6 @@ void SdlInputHandler::handleInput() {
     events.push_back(InputEvent::Shoot);
   }
   while (SDL_PollEvent(&e) != 0) {
-    //std::cout << e.type << std::endl;
     switch (e.type) {
       case SDL_QUIT:
         events.push_back(InputEvent::QuitToDesktop);

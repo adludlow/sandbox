@@ -51,12 +51,24 @@ int main (int argc, char** argv) {
   ctx->registerComponent<Geometry>();
 
   auto renderSystem = ctx->registerSystem<SdlRenderSystem>();
-  Signature signature;
-  signature.set(ctx->getComponentType<Transform>());
-  signature.set(ctx->getComponentType<Geometry>());
-  ctx->setSystemSignature<SdlRenderSystem>(signature);
+  {
+    Signature signature;
+    signature.set(ctx->getComponentType<Transform>());
+    signature.set(ctx->getComponentType<Geometry>());
+    ctx->setSystemSignature<SdlRenderSystem>(signature);
 
-  renderSystem->init(renderer);
+    renderSystem->init(renderer);
+  }
+
+  auto playerControlSystem = ctx->registerSystem<PlayerControlSystem>();
+  {
+    Signature signature;
+    signature.set(ctx->getComponentType<Transform>());
+    ctx->setSystemSignature<PlayerControlSystem>(signature);
+
+    playerControlSystem->init();
+    inputHandler->addObserver(playerControlSystem.get());
+  }
 
   Entity player = ctx->createEntity();
   ctx->addComponent<Transform>(

@@ -38,10 +38,10 @@ class SdlRenderSystem : public System {
         // TODO: SDLs coordinate system is inverted. Need to invert objects.
         std::vector<SDL_Point> sdlPoints;
         for (auto i = 0lu; i < geometry.vertices.size(); i++) {
-          glm::vec3 pos = geometry.vertices[i] * transform.scale + transform.position;
+          glm::vec4 pos = geometry.vertices[i] * transform.scale + transform.position;
           sdlPoints.push_back({ static_cast<int>(round(pos.x)), static_cast<int>(round(pos.y)) });
           if (i != 0 && (i+1) % 3 == 0) {
-            glm::vec3 initPos = geometry.vertices[i-2] * transform.scale + transform.position;
+            glm::vec4 initPos = geometry.vertices[i-2] * transform.scale + transform.position;
             sdlPoints.push_back({ static_cast<int>(round(initPos.x)), static_cast<int>(round(initPos.y)) });
             SDL_RenderDrawLines(renderer_, sdlPoints.data(), sdlPoints.size());
             sdlPoints.clear();

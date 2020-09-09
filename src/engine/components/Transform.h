@@ -1,11 +1,11 @@
 #pragma once
 
-#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 using namespace glm;
 
 struct Transform {
-  vec3 position;
-  vec3 rotation;
-  vec3 scale;  
+  vec4 position;
+  vec4 rotation;
+  vec4 scale;  
 };

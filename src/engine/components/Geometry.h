@@ -1,10 +1,10 @@
 #pragma once
 
-#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <vector>
 
 using namespace glm;
 
 struct Geometry {
-  std::vector<vec3> vertices;
+  std::vector<vec4> vertices;
 };

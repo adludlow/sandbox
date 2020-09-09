@@ -74,18 +74,18 @@ int main (int argc, char** argv) {
   ctx->addComponent<Transform>(
     player,
     Transform {
-      .position = glm::vec3(width/2, height/2, 0.0f),
-      .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-      .scale = glm::vec3(10.0f, 10.0f, 1.0f)
+      .position = glm::vec4(width/2, height/2, 0.0f, 0.0f),
+      .rotation = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+      .scale = glm::vec4(10.0f, 10.0f, 1.0f, 0.0f)
     }
   );
   ctx->addComponent<Geometry>(
     player,
     Geometry  {
       .vertices = {
-        glm::vec3(-1.0f, -1.0f, 0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f),
-        glm::vec3(1.0f, -1.0f, 0.0f)
+        glm::vec4(-1.0f, -1.0f, 0.0f, 0.0f),
+        glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
+        glm::vec4(1.0f, -1.0f, 0.0f, 0.0f)
       }
     }
   );

@@ -37,7 +37,7 @@ class PlayerControlSystem : public System, public InputObserver {
     }
 
     void onNotifyInput(const std::vector<InputEvent>& events) override {
-      glm::quat rotQuat = glm::quat(glm::vec4(0.05, 0.0, 0.0, 0.0));
+      glm::quat rotQuat = glm::quat(glm::vec4(0.1, 0.0, 0.0, 0.0));
       for (auto event: events) {
         switch (event) {
           case InputEvent::MoveForwards:
@@ -48,7 +48,6 @@ class PlayerControlSystem : public System, public InputObserver {
               //transform.position.y += 1;
               for (auto& v : geometry.vertices) {
                 v = v * glm::toMat4(rotQuat);
-                std::cout << v.x << " " << v.y << " " << v.z << std::endl;
               }
             }
             break;
@@ -56,7 +55,7 @@ class PlayerControlSystem : public System, public InputObserver {
             // Move player
             for (auto const& entity : entities_) {
               auto& transform = ctx->getComponent<Transform>(entity);
-              transform.position.y -= 1;
+              transform.position.y += 1;
             }
             break;
           default:

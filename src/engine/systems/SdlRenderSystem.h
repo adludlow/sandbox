@@ -3,6 +3,8 @@
 #include <SDL.h>
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "../core/Context.h"
 #include "../core/System.h"
@@ -37,6 +39,14 @@ class SdlRenderSystem : public System {
       );
     }
 
+    glm::vec3 invert(glm::vec3 vert) {
+      return glm::vec3(
+        vert.x - 2 * vert.x,
+        vert.y - 2 * vert.y,
+        vert.z
+      );
+    }
+
     void update(float dt) override {
       SDL_SetRenderDrawColor(renderer_, 0, 0, 0, SDL_ALPHA_OPAQUE);
       SDL_RenderClear(renderer_);
@@ -48,11 +58,14 @@ class SdlRenderSystem : public System {
         std::vector<SDL_Point> sdlPoints;
         for (auto i = 0lu; i < geometry.vertices.size(); i++) {
           glm::mat4 transMat = glm::mat4(1.0);
-          // Simulate depth
-          //transMat = glm::scale() * (transform.scale + geometry.vertices[i].z;
+          // Rotate
+          glm::quat rotQuat = glm::quat(glm::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 0.0));
+          glm::mat4 rotMat = glm::toMat4(rotQuat);
+          // Translate
           transMat = glm::translate(transMat, transform.position);
+          // Scale
           transMat = glm::scale(transMat, transform.scale);
-          glm::vec4 pos = transMat * invert(geometry.vertices[i]);
+          glm::vec4 pos = transMat * rotMat * geometry.vertices[i];
           sdlPoints.push_back({ static_cast<int>(round(pos.x)), static_cast<int>(round(pos.y)) });
           if (i != 0 && (i+1) % 3 == 0) {
             glm::vec4 initPos = transMat * invert(geometry.vertices[i-2]);

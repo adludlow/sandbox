@@ -76,16 +76,60 @@ int main (int argc, char** argv) {
     Transform {
       .position = glm::vec3(width/2, height/2, 0.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-      .scale = glm::vec3(20.0f, 20.0f, 1.0f)
+      .scale = glm::vec3(150.0f, 150.0f, 150.0f)
     }
   );
   ctx->addComponent<Geometry>(
     player,
     Geometry  {
       .vertices = {
-        glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f),
-        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
-        glm::vec4(1.0f, -1.0f, 0.0f, 1.0f)
+        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
+        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+        glm::vec4(1.0f, 1.0f, -1.0f, 1.0f),
+
+        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
+        glm::vec4(1.0f, -1.0f, 1.0f, 1.0f),
+
+        glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f),
+        glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f),
+        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
+
+        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f),
+        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
+        glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f),
+
+        glm::vec4(1.0f, 1.0f, -1.0f, 1.0f),
+        glm::vec4(1.0f, -1.0f, 1.0f, 1.0f),
+        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f),
+
+        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
+        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f),
+        glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f),
+
+        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
+        glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f),
+        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+
+        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+        glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f),
+        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
+
+        glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f),
+        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
+        glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f),
+
+        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f),
+        glm::vec4(1.0f, -1.0f, 1.0f, 1.0f),
+        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
+
+        glm::vec4(1.0f, 1.0f, -1.0f, 1.0f),
+        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+        glm::vec4(1.0f, -1.0f, 1.0f, 1.0f),
+
+        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
+        glm::vec4(1.0f, 1.0f, -1.0f, 1.0f),
+        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f)
       }
     }
   );

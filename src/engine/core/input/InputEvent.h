@@ -3,6 +3,8 @@
 enum class InputEvent {
   MoveForwards,
   MoveBackwards,
+  MoveLeft,
+  MoveRight,
   StopMoving,
   RotateClockwise,
   RotateAntiClockwise,

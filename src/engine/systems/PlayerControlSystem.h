@@ -2,8 +2,6 @@
 
 #include <memory>
 #include <string>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
 
 #include "../core/System.h"
 #include "../core/input/InputObserver.h"
@@ -37,25 +35,34 @@ class PlayerControlSystem : public System, public InputObserver {
     }
 
     void onNotifyInput(const std::vector<InputEvent>& events) override {
-      glm::quat rotQuat = glm::quat(glm::vec4(0.1, 0.0, 0.0, 0.0));
       for (auto event: events) {
         switch (event) {
           case InputEvent::MoveForwards:
-            // Move player
+            // Move player up
             for (auto const& entity : entities_) {
               auto& transform = ctx->getComponent<Transform>(entity);
-              auto& geometry = ctx->getComponent<Geometry>(entity);
-              //transform.position.y += 1;
-              for (auto& v : geometry.vertices) {
-                v = v * glm::toMat4(rotQuat);
-              }
+              transform.position.y -= 1;
             }
             break;
           case InputEvent::MoveBackwards:
-            // Move player
+            // Move player down
             for (auto const& entity : entities_) {
               auto& transform = ctx->getComponent<Transform>(entity);
               transform.position.y += 1;
+            }
+            break;
+          case InputEvent::RotateClockwise:
+            // Rotate player clockwise
+            for (auto const& entity : entities_) {
+              auto& transform = ctx->getComponent<Transform>(entity);
+              transform.rotation.y += 0.1;
+            }
+            break;
+          case InputEvent::RotateAntiClockwise:
+            // Rotate player anti clockwise
+            for (auto const& entity : entities_) {
+              auto& transform = ctx->getComponent<Transform>(entity);
+              transform.rotation.y -= 0.1;
             }
             break;
           default:

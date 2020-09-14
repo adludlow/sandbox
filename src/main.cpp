@@ -1,7 +1,10 @@
 #include <iostream>
+#include <fstream>
+#include <cstdlib>
 
 #include <SDL.h>
 
+#include "util/json/json11.hpp"
 #include "engine/core/Context.h"
 #include "engine/core/GameLoop.h"
 #include "engine/components/Transform.h"
@@ -12,14 +15,32 @@
 
 std::shared_ptr<Context> ctx = std::make_shared<Context>();
 
+Geometry importShape(std::string path) {
+
+}
+
 int main (int argc, char** argv) {
-  if (argc != 3) {
-    std::cout << "Usage: sandbox <wdth> <height>" << std::endl;
+  if (argc != 2) {
+    std::cout << "Usage: sandbox <config_file>" << std::endl;
     return 1;
   }
 
-  int width = std::stoi(argv[1]);
-  int height = std::stoi(argv[2]); 
+  std::ifstream ifs(argv[1]);
+  std::string config_string(
+    (std::istreambuf_iterator<char>(ifs)),
+    (std::istreambuf_iterator<char>())
+  );
+  ifs.close();
+
+  std::string parseErr;
+  json11::Json config = json11::Json::parse(config_string, parseErr);
+  if (parseErr.size() > 0) {
+    std::cout << parseErr << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  int width = config["width"].int_value();
+  int height = config["height"].int_value();
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     printf("SDL could not initialise. SDL_Error: %s\n", SDL_GetError());
@@ -69,6 +90,8 @@ int main (int argc, char** argv) {
     playerControlSystem->init();
     inputHandler->addObserver(playerControlSystem.get());
   }
+
+  Geometry sphere = importShape("shapes/sphere.obj");
 
   Entity player = ctx->createEntity();
   ctx->addComponent<Transform>(
@@ -138,19 +161,6 @@ int main (int argc, char** argv) {
   inputHandler->addObserver(&gameLoop);
 
   gameLoop.run();
-
-  /*
-  if (ctx->init(width, height) != 0) {
-    std::cout << "Failed to initialise sandbox context." << std::endl;
-    return 1;
-  }
-
-  std::unique_ptr<InputHandler> inputHandler = std::make_unique<SdlInputHandler>();
-  GameLoop gameLoop = GameLoop(inputHandler.get());
-  inputHandler->addObserver(&gameLoop);
-
-  gameLoop.run();
-  */
 
   return 0;
 }

@@ -32,6 +32,7 @@ include_directories(${SDL_HEADERS} ${BOOST_HEADERS} ${GLM_HEADERS} ${CMAKE_CURRE
 
 add_executable(
   sandbox
+  src/util/json/json11.cpp
   src/main.cpp
   src/engine/core/input/SdlInputHandler.cpp
   src/engine/util.cpp

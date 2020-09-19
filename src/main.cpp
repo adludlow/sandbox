@@ -39,7 +39,7 @@ Geometry importShape(std::string path) {
       face_verts.erase(face_verts.begin());
       for (auto idx_trip : face_verts) {
         auto idxs = util::split(idx_trip, '/');
-        auto v = vertices[std::stod(idxs[0])];
+        auto v = vertices[std::stod(idxs[0])-1];
         geom.vertices.push_back(v);
       }
     }
@@ -125,12 +125,14 @@ int main (int argc, char** argv) {
     Transform {
       .position = glm::vec3(width/2, height/2, 0.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-      .scale = glm::vec3(150.0f, 150.0f, 150.0f)
+      .scale = glm::vec3(200.0f, 200.0f, 200.0f)
     }
   );
   ctx->addComponent<Geometry>(
     player,
-    Geometry  {
+    importShape("/home/aludlow/projects/gamedev/sphere.obj")
+  );
+  /*  Geometry  {
       .vertices = {
         glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
         glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -181,7 +183,7 @@ int main (int argc, char** argv) {
         glm::vec4(1.0f, -1.0f, -1.0f, 1.0f)
       }
     }
-  );
+  );*/
 
   auto gameLoop = GameLoop(inputHandler, ctx);
   inputHandler->addObserver(&gameLoop);

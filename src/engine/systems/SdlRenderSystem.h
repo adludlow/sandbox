@@ -68,7 +68,7 @@ class SdlRenderSystem : public System {
           glm::vec4 pos = transMat * rotMat * geometry.vertices[i];
           sdlPoints.push_back({ static_cast<int>(round(pos.x)), static_cast<int>(round(pos.y)) });
           if (i != 0 && (i+1) % 3 == 0) {
-            glm::vec4 initPos = transMat * invert(geometry.vertices[i-2]);
+            glm::vec4 initPos = transMat * geometry.vertices[i-2];
             sdlPoints.push_back({ static_cast<int>(round(initPos.x)), static_cast<int>(round(initPos.y)) });
             SDL_RenderDrawLines(renderer_, sdlPoints.data(), sdlPoints.size());
             sdlPoints.clear();

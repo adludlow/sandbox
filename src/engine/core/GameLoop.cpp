@@ -3,7 +3,7 @@
 
 #include "GameLoop.h"
 #include "../Timer.h"
-#include "../util.h"
+#include "../../util/uuid.h"
 
 GameLoop::GameLoop(
   std::shared_ptr<InputHandler> inputHandler,

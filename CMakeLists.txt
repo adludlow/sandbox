@@ -35,9 +35,12 @@ add_executable(
   src/util/json/json11.cpp
   src/main.cpp
   src/engine/core/input/SdlInputHandler.cpp
-  src/engine/util.cpp
   src/engine/Timer.cpp
   src/engine/core/GameLoop.cpp
+  src/util/import.cpp
+  src/util/random.cpp
+  src/util/uuid.cpp
+  src/util/string.cpp
 )
 
 if(NOT APPLE)
@@ -52,10 +55,10 @@ add_library(Catch INTERFACE)
 target_include_directories(Catch INTERFACE src/test)
 add_executable(
   engineTest
-  src/engine/core/test/ComponentArray_test.cc
-  src/engine/core/test/ComponentManager_test.cc
-  src/engine/core/test/EntityManager_test.cc
-  src/engine/core/test/SystemManager_test.cc
+  src/engine/core/test/ComponentArray_test.cpp
+  src/engine/core/test/ComponentManager_test.cpp
+  src/engine/core/test/EntityManager_test.cpp
+  src/engine/core/test/SystemManager_test.cpp
 )
 target_link_libraries(engineTest PUBLIC Catch)
 

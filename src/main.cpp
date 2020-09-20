@@ -7,6 +7,7 @@
 
 #include "util/json/json11.hpp"
 #include "util/string.h"
+#include "util/import.h"
 #include "engine/core/Context.h"
 #include "engine/core/GameLoop.h"
 #include "engine/components/Transform.h"
@@ -16,36 +17,6 @@
 #include "engine/core/input/SdlInputHandler.h"
 
 std::shared_ptr<Context> ctx = std::make_shared<Context>();
-
-Geometry importShape(std::string path) {
-  std::ifstream ifs(path);
-  std::string line;
-  std::vector<glm::vec4> vertices;
-  Geometry geom{};
-  while (std::getline(ifs, line)) {
-    if (line.rfind("v ", 0) == 0) {
-      auto coords = util::split(line);
-      coords.erase(coords.begin());
-      vertices.push_back(
-        glm::vec4(
-          std::stod(coords[0]),
-          std::stod(coords[1]),
-          std::stod(coords[2]),
-          1.0f
-        )
-      );
-    } else if (line.rfind("f ", 0) == 0) {
-      auto face_verts = util::split(line);
-      face_verts.erase(face_verts.begin());
-      for (auto idx_trip : face_verts) {
-        auto idxs = util::split(idx_trip, '/');
-        auto v = vertices[std::stod(idxs[0])-1];
-        geom.vertices.push_back(v);
-      }
-    }
-  }
-  return geom;
-}
 
 int main (int argc, char** argv) {
   if (argc != 2) {
@@ -130,60 +101,8 @@ int main (int argc, char** argv) {
   );
   ctx->addComponent<Geometry>(
     player,
-    importShape("/home/aludlow/projects/gamedev/sphere.obj")
+    util::importShape("/home/aludlow/projects/gamedev/cube.obj")
   );
-  /*  Geometry  {
-      .vertices = {
-        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
-        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-        glm::vec4(1.0f, 1.0f, -1.0f, 1.0f),
-
-        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
-        glm::vec4(1.0f, -1.0f, 1.0f, 1.0f),
-
-        glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f),
-        glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f),
-        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
-
-        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f),
-        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
-        glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f),
-
-        glm::vec4(1.0f, 1.0f, -1.0f, 1.0f),
-        glm::vec4(1.0f, -1.0f, 1.0f, 1.0f),
-        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f),
-
-        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
-        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f),
-        glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f),
-
-        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
-        glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f),
-        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-
-        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-        glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f),
-        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
-
-        glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f),
-        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
-        glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f),
-
-        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f),
-        glm::vec4(1.0f, -1.0f, 1.0f, 1.0f),
-        glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f),
-
-        glm::vec4(1.0f, 1.0f, -1.0f, 1.0f),
-        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-        glm::vec4(1.0f, -1.0f, 1.0f, 1.0f),
-
-        glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f),
-        glm::vec4(1.0f, 1.0f, -1.0f, 1.0f),
-        glm::vec4(1.0f, -1.0f, -1.0f, 1.0f)
-      }
-    }
-  );*/
 
   auto gameLoop = GameLoop(inputHandler, ctx);
   inputHandler->addObserver(&gameLoop);

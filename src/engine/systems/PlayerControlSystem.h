@@ -5,7 +5,7 @@
 
 #include "../core/System.h"
 #include "../core/input/InputObserver.h"
-#include "../util.h"
+#include "../../util/uuid.h"
 
 extern std::shared_ptr<Context> ctx;
 

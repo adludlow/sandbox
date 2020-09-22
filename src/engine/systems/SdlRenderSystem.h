@@ -57,19 +57,16 @@ class SdlRenderSystem : public System {
 
         std::vector<SDL_Point> sdlPoints;
         for (auto i = 0lu; i < geometry.vertices.size(); i++) {
-          glm::mat4 model = glm::mat4(1.0f);
-          // Rotate
-          glm::quat rotQuat = glm::quat(glm::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 0.0));
-          glm::mat4 rotMat = glm::toMat4(rotQuat);
-          // Translate
-          model = glm::translate(model, transform.position);
-          // Scale
-          model = glm::scale(model, transform.scale);
-          glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)1680/(float)1050, 0.1f, 100.0f);
-          glm::vec4 pos = proj * model * rotMat * geometry.vertices[i];
+          auto transMat = glm::translate(glm::mat4(1.0f), transform.position);
+          auto scaleMat = glm::scale(glm::mat4(1.0f), transform.scale);
+          auto rotQuat = glm::quat(glm::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 0.0));
+          auto rotMat = glm::toMat4(rotQuat);
+
+          auto proj = glm::perspective(glm::radians(45.0f), 1680.0f/1050.0f, 0.1f, 100.0f);
+          auto pos = proj * transMat * rotMat * scaleMat * geometry.vertices[i];
           sdlPoints.push_back({ static_cast<int>(round(pos.x)), static_cast<int>(round(pos.y)) });
           if (i != 0 && (i+1) % 3 == 0) {
-            glm::vec4 initPos = proj * model * rotMat * geometry.vertices[i-2];
+            auto initPos = proj * transMat * rotMat * scaleMat * geometry.vertices[i-2];
             sdlPoints.push_back({ static_cast<int>(round(initPos.x)), static_cast<int>(round(initPos.y)) });
             SDL_RenderDrawLines(renderer_, sdlPoints.data(), sdlPoints.size());
             sdlPoints.clear();

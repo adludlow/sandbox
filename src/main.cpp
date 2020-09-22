@@ -96,12 +96,12 @@ int main (int argc, char** argv) {
     Transform {
       .position = glm::vec3(width/2, height/2, 0.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-      .scale = glm::vec3(200.0f, 200.0f, 200.0f)
+      .scale = glm::vec3(100.0f, 100.0f, 100.0f)
     }
   );
   ctx->addComponent<Geometry>(
     player,
-    util::importShape("/home/aludlow/projects/gamedev/cube.obj")
+    util::importShape("/home/aludlow/projects/gamedev/sphere.obj")
   );
 
   auto gameLoop = GameLoop(inputHandler, ctx);

@@ -97,9 +97,9 @@ int main (int argc, char** argv) {
   ctx->addComponent<Transform>(
     player,
     Transform {
-      .position = glm::vec3(0.0f, 0.0f, -1.0f),
+      .position = glm::vec3(0.0f, 0.0f, -100.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-      .scale = glm::vec3(100.0f, 100.0f, 1.0f)
+      .scale = glm::vec3(100.0f, 100.0f, 100.0f)
     }
   );
   ctx->addComponent<Geometry>(

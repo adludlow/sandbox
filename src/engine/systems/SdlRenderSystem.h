@@ -67,7 +67,7 @@ class SdlRenderSystem : public System {
           model = model * rotMat;
           auto viewMat = glm::mat4(1.0f);
           viewMat = glm::translate(viewMat, view.position);
-          glm::mat4 proj = glm::perspective(glm::radians(45.0f), 4.0f/3.0f, 0.1f, 100.0f);
+          glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)screenWidth_/(float)screenHeight_, 0.1f, 100.0f);
           glm::vec4 pos = proj * viewMat * model * geometry.vertices[i];
           //sdlPoints.push_back({ static_cast<int>(round(pos.x)), static_cast<int>(round(pos.y)) });
           sdlPoints.push_back(toSdlCoords(pos));

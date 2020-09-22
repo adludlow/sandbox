@@ -12,6 +12,7 @@
 #include "engine/core/GameLoop.h"
 #include "engine/components/Transform.h"
 #include "engine/components/Geometry.h"
+#include "engine/components/View.h"
 #include "engine/systems/SdlRenderSystem.h"
 #include "engine/systems/PlayerControlSystem.h"
 #include "engine/core/input/SdlInputHandler.h"
@@ -69,12 +70,14 @@ int main (int argc, char** argv) {
 
   ctx->registerComponent<Transform>();
   ctx->registerComponent<Geometry>();
+  ctx->registerComponent<View>();
 
   auto renderSystem = ctx->registerSystem<SdlRenderSystem>();
   {
     Signature signature;
     signature.set(ctx->getComponentType<Transform>());
     signature.set(ctx->getComponentType<Geometry>());
+    signature.set(ctx->getComponentType<View>());
     ctx->setSystemSignature<SdlRenderSystem>(signature);
 
     renderSystem->init(renderer);
@@ -94,7 +97,7 @@ int main (int argc, char** argv) {
   ctx->addComponent<Transform>(
     player,
     Transform {
-      .position = glm::vec3(width/2, height/2, 0.0f),
+      .position = glm::vec3(0.0f, 0.0f, -100.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
       .scale = glm::vec3(100.0f, 100.0f, 100.0f)
     }
@@ -102,6 +105,11 @@ int main (int argc, char** argv) {
   ctx->addComponent<Geometry>(
     player,
     util::importShape("/home/aludlow/projects/gamedev/sphere.obj")
+    //util::importShape("/home/aludlow/projects/gamedev/cube.obj")
+  );
+  ctx->addComponent<View>(
+    player,
+    View { glm::vec3(0.0f, 0.0f, -100.0f) }
   );
 
   auto gameLoop = GameLoop(inputHandler, ctx);

@@ -41,14 +41,14 @@ class PlayerControlSystem : public System, public InputObserver {
             // Move player up
             for (auto const& entity : entities_) {
               auto& transform = ctx->getComponent<Transform>(entity);
-              transform.position.y -= 1;
+              transform.position.y += 1;
             }
             break;
           case InputEvent::MoveBackwards:
             // Move player down
             for (auto const& entity : entities_) {
               auto& transform = ctx->getComponent<Transform>(entity);
-              transform.position.y += 1;
+              transform.position.y -= 1;
             }
             break;
           case InputEvent::RotateClockwise:

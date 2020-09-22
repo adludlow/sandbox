@@ -32,10 +32,9 @@ class SdlRenderSystem : public System {
       SDL_GetRendererOutputSize(renderer_, &w, &h);
       screenWidth_ = w;
       screenHeight_ = h;
-      std::cout << screenWidth_ << " " << screenHeight_ << std::endl;
+      ratio_ = w/h;
       screenWidthOffset_ = screenWidth_/2;
       screenHeightOffset_ = screenHeight_/2;
-      std::cout << screenWidthOffset_ << " " << screenHeightOffset_ << std::endl;
     }
 
     SDL_Point toSdlCoords(glm::vec4 pos) {
@@ -62,12 +61,12 @@ class SdlRenderSystem : public System {
           auto rotMat = glm::toMat4(rotQuat);
           auto viewMat = glm::mat4(1.0f);
           viewMat = glm::translate(viewMat, view.position);
-          auto proj = glm::perspective(glm::radians(45.0f), 1680.0f/1050.0f, 0.1f, 100.0f);
+          auto proj = glm::perspective(glm::radians(45.0f), ratio_, 0.1f, 100.0f);
 
           auto pos = proj * viewMat * transMat * rotMat * scaleMat * geometry.vertices[i];
           sdlPoints.push_back(toSdlCoords(pos));
           if (i != 0 && (i+1) % 3 == 0) {
-            auto initPos = proj * transMat * rotMat * scaleMat * geometry.vertices[i-2];
+            auto initPos = proj * viewMat * transMat * rotMat * scaleMat * geometry.vertices[i-2];
             sdlPoints.push_back(toSdlCoords(initPos));
             SDL_RenderDrawLines(renderer_, sdlPoints.data(), sdlPoints.size());
             sdlPoints.clear();
@@ -84,5 +83,6 @@ class SdlRenderSystem : public System {
     int screenHeight_{0};
     float screenWidthOffset_{0.0f};
     float screenHeightOffset_{0.0f};
+    float ratio_{0.0f};
 };
 

@@ -28,23 +28,21 @@ class SdlRenderSystem : public System {
 
     void init(SDL_Renderer* renderer) {
       renderer_ = renderer;
+      int w, h = 0;
+      SDL_GetRendererOutputSize(renderer_, &w, &h);
+      screenWidth_ = w;
+      screenHeight_ = h;
+      std::cout << screenWidth_ << " " << screenHeight_ << std::endl;
+      screenWidthOffset_ = screenWidth_/2;
+      screenHeightOffset_ = screenHeight_/2;
+      std::cout << screenWidthOffset_ << " " << screenHeightOffset_ << std::endl;
     }
 
-    glm::vec4 invert(glm::vec4 vert) {
-      return glm::vec4(
-        vert.x - 2 * vert.x,
-        vert.y - 2 * vert.y,
-        vert.z,
-        vert.w
-      );
-    }
-
-    glm::vec3 invert(glm::vec3 vert) {
-      return glm::vec3(
-        vert.x - 2 * vert.x,
-        vert.y - 2 * vert.y,
-        vert.z
-      );
+    SDL_Point toSdlCoords(glm::vec4 pos) {
+      return {
+        static_cast<int>(round(pos.x + screenWidthOffset_)),
+        static_cast<int>(round(-pos.y + screenHeightOffset_))
+      };
     }
 
     void update(float dt) override {
@@ -54,6 +52,7 @@ class SdlRenderSystem : public System {
       for (auto const& entity : entities_) {
         auto& transform = ctx->getComponent<Transform>(entity);
         auto& geometry = ctx->getComponent<Geometry>(entity);
+        auto& view = ctx->getComponent<View>(entity);
 
         std::vector<SDL_Point> sdlPoints;
         for (auto i = 0lu; i < geometry.vertices.size(); i++) {
@@ -65,12 +64,17 @@ class SdlRenderSystem : public System {
           model = glm::translate(model, transform.position);
           // Scale
           model = glm::scale(model, transform.scale);
-          glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)1680/(float)1050, 0.1f, 100.0f);
-          glm::vec4 pos = proj * model * rotMat * geometry.vertices[i];
-          sdlPoints.push_back({ static_cast<int>(round(pos.x)), static_cast<int>(round(pos.y)) });
+          model = model * rotMat;
+          auto viewMat = glm::mat4(1.0f);
+          viewMat = glm::translate(viewMat, view.position);
+          glm::mat4 proj = glm::perspective(glm::radians(45.0f), 4.0f/3.0f, 0.1f, 100.0f);
+          glm::vec4 pos = proj * viewMat * model * geometry.vertices[i];
+          //sdlPoints.push_back({ static_cast<int>(round(pos.x)), static_cast<int>(round(pos.y)) });
+          sdlPoints.push_back(toSdlCoords(pos));
           if (i != 0 && (i+1) % 3 == 0) {
-            glm::vec4 initPos = proj * model * rotMat * geometry.vertices[i-2];
-            sdlPoints.push_back({ static_cast<int>(round(initPos.x)), static_cast<int>(round(initPos.y)) });
+            glm::vec4 initPos = proj * viewMat * model * geometry.vertices[i-2];
+            sdlPoints.push_back(toSdlCoords(initPos));
+            //sdlPoints.push_back({ static_cast<int>(round(initPos.x)), static_cast<int>(round(initPos.y)) });
             SDL_RenderDrawLines(renderer_, sdlPoints.data(), sdlPoints.size());
             sdlPoints.clear();
           } 
@@ -82,5 +86,9 @@ class SdlRenderSystem : public System {
   private:
     std::set<Entity> entities_{};
     SDL_Renderer* renderer_;
+    int screenWidth_{0};
+    int screenHeight_{0};
+    float screenWidthOffset_{0.0f};
+    float screenHeightOffset_{0.0f};
 };
 

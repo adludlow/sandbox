@@ -2,8 +2,12 @@
 #include <fstream>
 #include <cstdlib>
 #include <string>
+#include <sstream>
 
 #include <SDL.h>
+#include <GL/glew.h>
+#include <SDL_opengl.h>
+#include <GL/glu.h>
 
 #include "util/json/json11.hpp"
 #include "util/string.h"
@@ -46,27 +50,82 @@ int main (int argc, char** argv) {
     printf("SDL could not initialise. SDL_Error: %s\n", SDL_GetError());
     return 1;
   }
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
   SDL_Window* window = SDL_CreateWindow(
     "SDL_Window",
     SDL_WINDOWPOS_UNDEFINED,
     SDL_WINDOWPOS_UNDEFINED,
     width,
     height,
-    SDL_WINDOW_SHOWN
+    SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
   );
   if (window == nullptr) {
     printf("Window could not be created. SDL_Error: %s\n", SDL_GetError());
     return 2;
   }
+  /*
   SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
   if (renderer == nullptr) {
     printf("Renderer could not be created. SDL Error: %s\n", SDL_GetError());
     return 3;
   }
+  */
+  SDL_GLContext gContext = SDL_GL_CreateContext(window);
+  if (gContext == nullptr) {
+    printf("OpenGL context could not be created: %s\n", SDL_GetError());
+    return 3;
+  }
+
+  //Init GLEW
+  glewExperimental = GL_TRUE;
+  GLenum glewError = glewInit();
+  if (glewError != GLEW_OK) {
+    printf("Error initialising GLEW: %s\n", glewGetErrorString(glewError));
+  }
+
+  GLuint gProgramID = glCreateProgram();
 
   ctx->init();
   auto inputHandler = std::make_shared<SdlInputHandler>();
   ctx->registerInputHandler(inputHandler);
+
+  float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f, 0.5f, 0.0f
+  };
+
+  // Generate vertex buffer object
+  unsigned int VBO;
+  glGenBuffers(1, &VBO);
+  // Bind buffer to GL_ARRAY_BUFFER for a vertex buffer
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  // Copy vertices into buffer
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+  // Load shader
+  std::ifstream vertIfs("/home/aludlow/projects/gamedev/sandbox/src/shaders/vertex.glsl");
+  std::stringstream vertStream;
+  vertStream << vertIfs.rdbuf();
+  vertIfs.close();
+  std::string vertString = vertStream.str();
+  std::cout << vertString << std::endl;
+  const GLchar* vertexShaderSource = vertString.c_str();
+  glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+  glCompileShader(vertexShader);
+  int success;
+  char infoLog[512];
+  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    std::cout << "Vertex shader compilation failed: " << infoLog << std::endl;
+    return 4;
+  }
+
+/*
 
   ctx->registerComponent<Transform>();
   ctx->registerComponent<Geometry>();
@@ -111,6 +170,7 @@ int main (int argc, char** argv) {
     player,
     View { glm::vec3(0.0f, 0.0f, 75.0f) }
   );
+  */
 
   auto gameLoop = GameLoop(inputHandler, ctx);
   inputHandler->addObserver(&gameLoop);

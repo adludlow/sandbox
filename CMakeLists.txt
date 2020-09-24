@@ -46,7 +46,7 @@ add_executable(
 if(NOT APPLE)
   set(SDL_LIBS /usr/lib/libSDL2.so /usr/lib/libSDL2_image.so)
 endif()
-target_link_libraries(sandbox ${SDL_LIBS})
+target_link_libraries(sandbox ${SDL_LIBS} /usr/lib/libGLEW.so)
 
 install(TARGETS sandbox RUNTIME DESTINATION ${BIN_DIR})
 

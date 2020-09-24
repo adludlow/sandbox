@@ -23,21 +23,26 @@
 
 std::shared_ptr<Context> ctx = std::make_shared<Context>();
 
+std::string loadFile(const std::string& path) {
+  std::ifstream ifs(path);
+  std::string fileContent(
+    (std::istreambuf_iterator<char>(ifs)),
+    (std::istreambuf_iterator<char>())
+  );
+  ifs.close();
+  return fileContent;
+}
+
 int main (int argc, char** argv) {
   if (argc != 2) {
     std::cout << "Usage: sandbox <config_file>" << std::endl;
     return 1;
   }
 
-  std::ifstream ifs(argv[1]);
-  std::string config_string(
-    (std::istreambuf_iterator<char>(ifs)),
-    (std::istreambuf_iterator<char>())
-  );
-  ifs.close();
+  std::string configString = loadFile(argv[1]);
 
   std::string parseErr;
-  json11::Json config = json11::Json::parse(config_string, parseErr);
+  json11::Json config = json11::Json::parse(configString, parseErr);
   if (parseErr.size() > 0) {
     std::cout << parseErr << std::endl;
     std::exit(EXIT_FAILURE);
@@ -106,14 +111,9 @@ int main (int argc, char** argv) {
   // Copy vertices into buffer
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
   GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  // Load shader
-  std::ifstream vertIfs("/home/aludlow/projects/gamedev/sandbox/src/shaders/vertex.glsl");
-  std::stringstream vertStream;
-  vertStream << vertIfs.rdbuf();
-  vertIfs.close();
-  std::string vertString = vertStream.str();
-  std::cout << vertString << std::endl;
-  const GLchar* vertexShaderSource = vertString.c_str();
+  // Load vertex shader
+  std::string vertexString = loadFile("/home/aludlow/projects/gamedev/sandbox/src/shaders/vertex.glsl");
+  const GLchar* vertexShaderSource = vertexString.c_str();
   glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
   glCompileShader(vertexShader);
   int success;
@@ -124,6 +124,30 @@ int main (int argc, char** argv) {
     std::cout << "Vertex shader compilation failed: " << infoLog << std::endl;
     return 4;
   }
+
+  GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+  std::string fragmentString = loadFile("/home/aludlow/projects/gamedev/sandbox/src/shaders/fragment.glsl");
+  const GLchar* fragmentShaderSource = fragmentString.c_str();
+  glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+  glCompileShader(fragmentShader);
+  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+    std::cout << "Fragment shader compilation failed: " << infoLog << std::endl;
+    return 4;
+  }
+
+  GLuint shaderProgram = glCreateProgram();
+  glAttachShader(shaderProgram, vertexShader);
+  glAttachShader(shaderProgram, fragmentShader);
+  glLinkProgram(shaderProgram);
+  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+  if (!success) {
+    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+    std::cout << "Shader linking failed: " << infoLog << std::endl;
+    return 4;
+  }
+  glUseProgram(shaderProgram);
 
 /*
 

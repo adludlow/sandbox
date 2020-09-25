@@ -103,13 +103,6 @@ int main (int argc, char** argv) {
     0.0f, 0.5f, 0.0f
   };
 
-  // Generate vertex buffer object
-  unsigned int VBO;
-  glGenBuffers(1, &VBO);
-  // Bind buffer to GL_ARRAY_BUFFER for a vertex buffer
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  // Copy vertices into buffer
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
   GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
   // Load vertex shader
   std::string vertexString = loadFile("/home/aludlow/projects/gamedev/sandbox/src/shaders/vertex.glsl");
@@ -137,6 +130,24 @@ int main (int argc, char** argv) {
     return 4;
   }
 
+  GLuint VAO;
+  glGenVertexArrays(1, &VAO);
+  // Bind Vertex Array Object
+  glBindVertexArray(VAO);
+
+  // Generate vertex buffer object
+  GLuint VBO;
+  glGenBuffers(1, &VBO);
+  // Bind buffer to GL_ARRAY_BUFFER for a vertex buffer
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  // Copy vertices into buffer
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  // Render loop
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
   GLuint shaderProgram = glCreateProgram();
   glAttachShader(shaderProgram, vertexShader);
   glAttachShader(shaderProgram, fragmentShader);
@@ -147,8 +158,14 @@ int main (int argc, char** argv) {
     std::cout << "Shader linking failed: " << infoLog << std::endl;
     return 4;
   }
+  glClearColor( 0.f, 0.f, 0.f, 1.f );
+  glClear( GL_COLOR_BUFFER_BIT );
   glUseProgram(shaderProgram);
 
+  glBindVertexArray(VAO);
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+
+  SDL_GL_SwapWindow( window );
 /*
 
   ctx->registerComponent<Transform>();

@@ -41,6 +41,7 @@ add_executable(
   src/util/random.cpp
   src/util/uuid.cpp
   src/util/string.cpp
+  src/util/io.cpp
 )
 
 if(NOT APPLE)

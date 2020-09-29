@@ -7,10 +7,18 @@
 #include <SDL_opengl.h>
 #include <GL/glu.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include "../core/System.h"
 #include "../../util/io.h"
 
 extern std::shared_ptr<Context> ctx;
+
+static const uint MAX_BUFF_VERTS = 10000;
+static const uint VERT_SIZE = sizeof(glm::vec4);
+static const uint MAX_VERT_BUFF_SIZE = MAX_BUFF_VERTS * VERT_SIZE;
 
 class GlRenderSystem : public System {
   public:
@@ -28,12 +36,9 @@ class GlRenderSystem : public System {
     
     void init(SDL_Window* window) {
       window_ = window;
-
-      float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
-      };
+      int width, height = 0;
+      SDL_GetWindowSize(window_, &width, &height);
+      ratio_ = width/height;
 
       // Create program to attach shaders to.
       glProgramId_ = glCreateProgram();
@@ -87,9 +92,9 @@ class GlRenderSystem : public System {
       // Bind buffer to GL_ARRAY_BUFFER for a vertex buffer
       glBindBuffer(GL_ARRAY_BUFFER, glVbo_);
       // Copy vertices into buffer
-      glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, MAX_VERT_BUFF_SIZE, NULL, GL_STATIC_DRAW);
 
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+      glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
       glEnableVertexAttribArray(0);
 
       glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -97,17 +102,40 @@ class GlRenderSystem : public System {
     }
 
     void update(float dt) override {
-      glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
+      glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
       glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       glUseProgram(glProgramId_);
       glBindVertexArray(glVao_);
+      glBindBuffer(GL_ARRAY_BUFFER, glVbo_);
 
-      glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-      glDrawArrays(GL_TRIANGLES, 0, 3);
-      SDL_GL_SwapWindow(window_);
+      for (auto entity : entities_) {
+        auto& geometry = ctx->getComponent<Geometry>(entity);
+        auto& transform = ctx->getComponent<Transform>(entity);
+        auto& view = ctx->getComponent<View>(entity);
 
-      glBindVertexArray(0);
+        auto transMat = glm::translate(glm::mat4(1.0f), transform.position);
+        auto scaleMat = glm::scale(glm::mat4(1.0f), transform.scale);
+        auto rotQuat = glm::quat(glm::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 0.0));
+        auto rotMat = glm::toMat4(rotQuat);
+        auto viewMat = glm::mat4(1.0f);
+        viewMat = glm::translate(viewMat, view.position);
+        auto proj = glm::perspective(glm::radians(45.0f), ratio_, 0.1f, 100.0f);
+
+        std::vector<glm::vec4> translatedVerts{};
+        for (auto i = 0lu; i < geometry.vertices.size(); i++) {
+          auto pos = proj * viewMat * transMat * rotMat * scaleMat * geometry.vertices[i];
+          //auto pos = proj * transMat * rotMat * scaleMat * geometry.vertices[i];
+          translatedVerts.push_back(pos);
+        }
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * translatedVerts.size(), translatedVerts.data());
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawArrays(GL_TRIANGLES, 0, translatedVerts.size());
+        SDL_GL_SwapWindow(window_);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+      }
     }
   
   private:
@@ -117,4 +145,5 @@ class GlRenderSystem : public System {
     GLuint glProgramId_{};
     GLuint glVao_{};
     GLuint glVbo_{};
+    float ratio_{0.0f};
 };

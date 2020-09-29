@@ -111,6 +111,7 @@ int main (int argc, char** argv) {
 
     renderSystem->init(renderer);
   }
+*/
 
   auto playerControlSystem = ctx->registerSystem<PlayerControlSystem>();
   {
@@ -128,19 +129,19 @@ int main (int argc, char** argv) {
     Transform {
       .position = glm::vec3(0.0f, 0.0f, 0.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-      .scale = glm::vec3(50.0f, 50.0f, 50.0f)
+      .scale = glm::vec3(0.3f, 0.3f, 0.3f)
     }
   );
   ctx->addComponent<Geometry>(
     player,
+    //util::importShape("/home/aludlow/projects/gamedev/sphere.obj")
     util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
     //util::importShape("/home/aludlow/projects/gamedev/cube.obj")
   );
   ctx->addComponent<View>(
     player,
-    View { glm::vec3(0.0f, 0.0f, 75.0f) }
+    View { glm::vec3(0.0f, 0.0f, 0.0f) }
   );
-  */
 
   auto gameLoop = GameLoop(inputHandler, ctx);
   inputHandler->addObserver(&gameLoop);

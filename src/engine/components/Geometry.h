@@ -8,6 +8,7 @@ using namespace glm;
 
 struct Geometry {
   std::vector<vec4> vertices;
+  std::vector<uint> indices;
 
   void print() {
     for (auto v : vertices) {

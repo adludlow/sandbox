@@ -19,6 +19,8 @@ extern std::shared_ptr<Context> ctx;
 static const uint MAX_BUFF_VERTS = 10000;
 static const uint VERT_SIZE = sizeof(glm::vec4);
 static const uint MAX_VERT_BUFF_SIZE = MAX_BUFF_VERTS * VERT_SIZE;
+static const uint INDEX_SIZE = sizeof(uint);
+static const uint MAX_INDEX_BUFF_SIZE = MAX_BUFF_VERTS * INDEX_SIZE;
 
 class GlRenderSystem : public System {
   public:
@@ -83,8 +85,9 @@ class GlRenderSystem : public System {
       glDeleteShader(fragmentShader);
 
       glGenVertexArrays(1, &glVao_);
-      // Generate vertex buffer object
+      // Generate vertex and element buffer object
       glGenBuffers(1, &glVbo_);
+      glGenBuffers(1, &glEbo_);
 
       // Bind Vertex Array Object
       glBindVertexArray(glVao_);
@@ -94,10 +97,15 @@ class GlRenderSystem : public System {
       // Copy vertices into buffer
       glBufferData(GL_ARRAY_BUFFER, MAX_VERT_BUFF_SIZE, NULL, GL_STATIC_DRAW);
 
+      // Element buffer
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glEbo_);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_INDEX_BUFF_SIZE, NULL, GL_STATIC_DRAW);
+
       glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
       glEnableVertexAttribArray(0);
 
       glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       glBindVertexArray(0);
     }
 
@@ -107,7 +115,6 @@ class GlRenderSystem : public System {
 
       glUseProgram(glProgramId_);
       glBindVertexArray(glVao_);
-      glBindBuffer(GL_ARRAY_BUFFER, glVbo_);
 
       for (auto entity : entities_) {
         auto& geometry = ctx->getComponent<Geometry>(entity);
@@ -124,13 +131,19 @@ class GlRenderSystem : public System {
 
         std::vector<glm::vec4> translatedVerts{};
         for (auto i = 0lu; i < geometry.vertices.size(); i++) {
-          auto pos = proj * viewMat * transMat * rotMat * scaleMat * geometry.vertices[i];
-          //auto pos = proj * transMat * rotMat * scaleMat * geometry.vertices[i];
+          //auto pos = proj * viewMat * transMat * rotMat * scaleMat * geometry.vertices[i];
+          auto pos = rotMat * geometry.vertices[i];
           translatedVerts.push_back(pos);
         }
+        // Vertices
+        glBindBuffer(GL_ARRAY_BUFFER, glVbo_);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * translatedVerts.size(), translatedVerts.data());
+        // Indices
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glEbo_);
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(uint) * geometry.indices.size(), geometry.indices.data());
+
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawArrays(GL_TRIANGLES, 0, translatedVerts.size());
+        glDrawElements(GL_TRIANGLES, geometry.indices.size(), GL_UNSIGNED_INT, 0);
         SDL_GL_SwapWindow(window_);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -145,5 +158,6 @@ class GlRenderSystem : public System {
     GLuint glProgramId_{};
     GLuint glVao_{};
     GLuint glVbo_{};
+    GLuint glEbo_{};
     float ratio_{0.0f};
 };

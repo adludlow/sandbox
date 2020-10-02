@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "../core/System.h"
 #include "../../util/io.h"
@@ -129,15 +130,12 @@ class GlRenderSystem : public System {
         viewMat = glm::translate(viewMat, view.position);
         auto proj = glm::perspective(glm::radians(45.0f), ratio_, 0.1f, 100.0f);
 
-        std::vector<glm::vec4> translatedVerts{};
-        for (auto i = 0lu; i < geometry.vertices.size(); i++) {
-          //auto pos = proj * viewMat * transMat * rotMat * scaleMat * geometry.vertices[i];
-          auto pos = rotMat * geometry.vertices[i];
-          translatedVerts.push_back(pos);
-        }
+        auto trans = transMat * rotMat * scaleMat;
+        unsigned int transformLoc = glGetUniformLocation(glProgramId_, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         // Vertices
         glBindBuffer(GL_ARRAY_BUFFER, glVbo_);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * translatedVerts.size(), translatedVerts.data());
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * geometry.vertices.size(), geometry.vertices.data());
         // Indices
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glEbo_);
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(uint) * geometry.indices.size(), geometry.indices.data());

@@ -129,7 +129,7 @@ int main (int argc, char** argv) {
     Transform {
       .position = glm::vec3(0.0f, 0.0f, 0.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-      .scale = glm::vec3(0.3f, 0.3f, 0.3f)
+      .scale = glm::vec3(0.5f, 0.5f, 0.5f)
     }
   );
   ctx->addComponent<Geometry>(

@@ -120,14 +120,11 @@ class GlRenderSystem : public System {
       for (auto entity : entities_) {
         auto& geometry = ctx->getComponent<Geometry>(entity);
         auto& transform = ctx->getComponent<Transform>(entity);
-        auto& view = ctx->getComponent<View>(entity);
 
         auto transMat = glm::translate(glm::mat4(1.0f), transform.position);
         auto scaleMat = glm::scale(glm::mat4(1.0f), transform.scale);
         auto rotQuat = glm::quat(glm::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 0.0));
         auto rotMat = glm::toMat4(rotQuat);
-        auto viewMat = glm::mat4(1.0f);
-        viewMat = glm::translate(viewMat, view.position);
         auto proj = glm::perspective(glm::radians(45.0f), ratio_, 0.1f, 100.0f);
 
         auto trans = transMat * rotMat * scaleMat;

@@ -4,6 +4,7 @@
 
 using namespace glm;
 
-struct View {
+struct Camera {
   vec3 position;
+  vec3 direction;
 };

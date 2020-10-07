@@ -15,10 +15,11 @@
 #include "engine/core/GameLoop.h"
 #include "engine/components/Transform.h"
 #include "engine/components/Geometry.h"
-#include "engine/components/View.h"
+#include "engine/components/Camera.h"
 //#include "engine/systems/SdlRenderSystem.h"
 #include "engine/systems/GlRenderSystem.h"
 #include "engine/systems/PlayerControlSystem.h"
+#include "engine/systems/CameraSystem.h"
 #include "engine/core/input/SdlInputHandler.h"
 
 std::shared_ptr<Context> ctx = std::make_shared<Context>();
@@ -87,31 +88,26 @@ int main (int argc, char** argv) {
 
   ctx->registerComponent<Transform>();
   ctx->registerComponent<Geometry>();
-  ctx->registerComponent<View>();
+  ctx->registerComponent<Camera>();
+
+  auto cameraSystem = ctx->registerSystem<CameraSystem>();
+  {
+    Signature signature;
+    signature.set(ctx->getComponentType<Camera>());
+    ctx->setSystemSignature<CameraSystem>(signature);
+
+    cameraSystem->init();
+  }
 
   auto renderSystem = ctx->registerSystem<GlRenderSystem>();
   {
     Signature signature;
     signature.set(ctx->getComponentType<Transform>());
     signature.set(ctx->getComponentType<Geometry>());
-    signature.set(ctx->getComponentType<View>());
     ctx->setSystemSignature<GlRenderSystem>(signature);
 
     renderSystem->init(window);
   }
-
-/*
-  auto renderSystem = ctx->registerSystem<SdlRenderSystem>();
-  {
-    Signature signature;
-    signature.set(ctx->getComponentType<Transform>());
-    signature.set(ctx->getComponentType<Geometry>());
-    signature.set(ctx->getComponentType<View>());
-    ctx->setSystemSignature<SdlRenderSystem>(signature);
-
-    renderSystem->init(renderer);
-  }
-*/
 
   auto playerControlSystem = ctx->registerSystem<PlayerControlSystem>();
   {
@@ -138,9 +134,12 @@ int main (int argc, char** argv) {
     util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
     //util::importShape("/home/aludlow/projects/gamedev/cube.obj")
   );
-  ctx->addComponent<View>(
+  ctx->addComponent<Camera>(
     player,
-    View { glm::vec3(0.0f, 0.0f, 0.0f) }
+    Camera { 
+      .position = glm::vec3(0.0f, 0.0f, 0.0f),
+      .direction = glm::vec3(0.0f, 0.0f, 0.0f)
+    }
   );
 
   auto gameLoop = GameLoop(inputHandler, ctx);

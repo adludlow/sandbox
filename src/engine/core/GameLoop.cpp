@@ -14,7 +14,7 @@ GameLoop::GameLoop(
   id_ = util::uuid();
 }
 
-void GameLoop::onNotifyInput(const std::vector<InputEvent>& events) {
+void GameLoop::onNotifyInput(const std::vector<InputEvent>& events, float dt) {
   for (auto event: events) {
     switch (event) {
       case InputEvent::QuitToDesktop:
@@ -41,7 +41,7 @@ int GameLoop::run() {
     capTimer.start();
     float avgFps = countedFrames / (fpsTimer.getTicks()/1000.f);
     
-    inputHandler_->handleInput();
+    inputHandler_->handleInput(capTimer.getTicks());
 
     gameContext_->update(capTimer.getTicks());
     countedFrames++;

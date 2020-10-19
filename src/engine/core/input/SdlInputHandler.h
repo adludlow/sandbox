@@ -10,10 +10,10 @@ class SdlInputHandler: public InputHandler {
   public:
     SdlInputHandler() {};
 
-    void handleInput();
+    void handleInput(float dt) override;
 
-    virtual void addObserver(InputObserver* observer);
-    virtual void removeObserver(InputObserver* observer);
+    virtual void addObserver(InputObserver* observer) override;
+    virtual void removeObserver(InputObserver* observer) override;
 
   private:
     std::map<std::string, InputObserver*> observers;

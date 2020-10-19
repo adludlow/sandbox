@@ -17,7 +17,7 @@ void SdlInputHandler::removeObserver(InputObserver* observer) {
   }
 }
 
-void SdlInputHandler::handleInput() {
+void SdlInputHandler::handleInput(float dt) {
   SDL_Event e;
   std::vector<InputEvent> events;
   const Uint8 *keystate = SDL_GetKeyboardState(NULL);
@@ -45,6 +45,6 @@ void SdlInputHandler::handleInput() {
   }
 
   for (auto observer: observers) {
-    observer.second->onNotifyInput(events);
+    observer.second->onNotifyInput(events, dt);
   }
 }

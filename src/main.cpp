@@ -97,6 +97,7 @@ int main (int argc, char** argv) {
     ctx->setSystemSignature<CameraSystem>(signature);
 
     cameraSystem->init();
+    inputHandler->addObserver(cameraSystem.get());
   }
 
   auto renderSystem = ctx->registerSystem<GlRenderSystem>();
@@ -104,6 +105,7 @@ int main (int argc, char** argv) {
     Signature signature;
     signature.set(ctx->getComponentType<Transform>());
     signature.set(ctx->getComponentType<Geometry>());
+    signature.set(ctx->getComponentType<Camera>());
     ctx->setSystemSignature<GlRenderSystem>(signature);
 
     renderSystem->init(window);
@@ -116,12 +118,12 @@ int main (int argc, char** argv) {
     ctx->setSystemSignature<PlayerControlSystem>(signature);
 
     playerControlSystem->init();
-    inputHandler->addObserver(playerControlSystem.get());
+    //inputHandler->addObserver(playerControlSystem.get());
   }
 
-  Entity player = ctx->createEntity();
+  Entity object = ctx->createEntity();
   ctx->addComponent<Transform>(
-    player,
+    object,
     Transform {
       .position = glm::vec3(0.0f, 0.0f, 0.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
@@ -129,18 +131,21 @@ int main (int argc, char** argv) {
     }
   );
   ctx->addComponent<Geometry>(
-    player,
+    object,
     //util::importShape("/home/aludlow/projects/gamedev/sphere.obj")
     util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
     //util::importShape("/home/aludlow/projects/gamedev/cube.obj")
   );
+
+  /*Entity camera = ctx->createEntity();
   ctx->addComponent<Camera>(
-    player,
+    camera,
     Camera { 
       .position = glm::vec3(0.0f, 0.0f, 0.0f),
-      .direction = glm::vec3(0.0f, 0.0f, 0.0f)
+      .front = glm::vec3(0.0f, 0.0f, -1.0f),
+      .up = glm::vec3(0.0f, 1.0f, 0.0f)
     }
-  );
+  );*/
 
   auto gameLoop = GameLoop(inputHandler, ctx);
   inputHandler->addObserver(&gameLoop);

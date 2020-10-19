@@ -120,6 +120,7 @@ class GlRenderSystem : public System {
       for (auto entity : entities_) {
         auto& geometry = ctx->getComponent<Geometry>(entity);
         auto& transform = ctx->getComponent<Transform>(entity);
+        //auto& camera = ctx->getComponent<Camera>(entity);
 
         auto transMat = glm::translate(glm::mat4(1.0f), transform.position);
         auto scaleMat = glm::scale(glm::mat4(1.0f), transform.scale);
@@ -128,6 +129,8 @@ class GlRenderSystem : public System {
         auto proj = glm::perspective(glm::radians(45.0f), ratio_, 0.1f, 100.0f);
 
         auto trans = transMat * rotMat * scaleMat;
+        //glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
+        //glm::mat4 trans = view;
         unsigned int transformLoc = glGetUniformLocation(glProgramId_, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         // Vertices

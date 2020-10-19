@@ -15,7 +15,7 @@ class GameLoop: public InputObserver {
     const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 
     int run();
-    void onNotifyInput(const std::vector<InputEvent>& events);
+    void onNotifyInput(const std::vector<InputEvent>& events, float dt) override;
     std::string id();
 
   private:

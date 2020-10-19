@@ -34,7 +34,7 @@ class PlayerControlSystem : public System, public InputObserver {
       return id_;
     }
 
-    void onNotifyInput(const std::vector<InputEvent>& events) override {
+    void onNotifyInput(const std::vector<InputEvent>& events, float dt) override {
       for (auto event: events) {
         switch (event) {
           case InputEvent::MoveForwards:

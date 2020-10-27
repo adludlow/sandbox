@@ -11,3 +11,15 @@ std::string util::loadFile(const std::string& path) {
   ifs.close();
   return fileContent;
 }
+
+std::ostream& operator<<(std::ostream& os, const glm::vec3& vec)
+{
+    os << vec.x << ',' << vec.y << ',' << vec.z;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const glm::vec4& vec)
+{
+    os << vec.x << ',' << vec.y << ',' << vec.z << ',' << vec.w;
+    return os;
+}

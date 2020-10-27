@@ -10,5 +10,5 @@ struct Camera {
   vec3 up;
   vec3 right;
   vec3 direction;
-  float speed { 2.0f };
+  float speed { 0.01f };
 };

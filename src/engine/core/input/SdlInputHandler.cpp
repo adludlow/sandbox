@@ -22,10 +22,10 @@ void SdlInputHandler::handleInput(float dt) {
   std::vector<InputEvent> events;
   const Uint8 *keystate = SDL_GetKeyboardState(NULL);
   if (keystate[SDL_SCANCODE_LEFT]) {
-    events.push_back(InputEvent::RotateAntiClockwise);
+    events.push_back(InputEvent::MoveLeft);
   }
   if (keystate[SDL_SCANCODE_RIGHT]) {
-    events.push_back(InputEvent::RotateClockwise);
+    events.push_back(InputEvent::MoveRight);
   }
   if (keystate[SDL_SCANCODE_UP]) {
     events.push_back(InputEvent::MoveForwards);

@@ -120,11 +120,11 @@ int main (int argc, char** argv) {
     //inputHandler->addObserver(playerControlSystem.get());
   }
 
-  Entity object = ctx->createEntity("camera");
+  Entity object = ctx->createEntity();
   ctx->addComponent<Transform>(
     object,
     Transform {
-      .position = glm::vec3(0.0f, 0.0f, 0.0f),
+      .position = glm::vec3(0.0f, 0.0f, -10.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
       .scale = glm::vec3(0.5f, 0.5f, 0.5f)
     }
@@ -132,19 +132,21 @@ int main (int argc, char** argv) {
   ctx->addComponent<Geometry>(
     object,
     //util::importShape("/home/aludlow/projects/gamedev/sphere.obj")
-    util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
-    //util::importShape("/home/aludlow/projects/gamedev/cube.obj")
+    //util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
+    util::importShape("/home/aludlow/projects/gamedev/cube.obj")
   );
 
-  /*Entity camera = ctx->createEntity();
+  Entity camera = ctx->createEntity("camera");
   ctx->addComponent<Camera>(
     camera,
     Camera { 
-      .position = glm::vec3(0.0f, 0.0f, 0.0f),
+      .position = glm::vec3(0.0f, 0.0f, 3.0f),
       .front = glm::vec3(0.0f, 0.0f, -1.0f),
-      .up = glm::vec3(0.0f, 1.0f, 0.0f)
+      .up = glm::vec3(0.0f, 1.0f, 0.0f),
+      .right = glm::vec3(1.0f, 0.0f, 0.0f),
+      .speed = 0.005f
     }
-  );*/
+  );
 
   auto gameLoop = GameLoop(inputHandler, ctx);
   inputHandler->addObserver(&gameLoop);

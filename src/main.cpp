@@ -105,7 +105,6 @@ int main (int argc, char** argv) {
     Signature signature;
     signature.set(ctx->getComponentType<Transform>());
     signature.set(ctx->getComponentType<Geometry>());
-    signature.set(ctx->getComponentType<Camera>());
     ctx->setSystemSignature<GlRenderSystem>(signature);
 
     renderSystem->init(window);
@@ -121,7 +120,7 @@ int main (int argc, char** argv) {
     //inputHandler->addObserver(playerControlSystem.get());
   }
 
-  Entity object = ctx->createEntity();
+  Entity object = ctx->createEntity("camera");
   ctx->addComponent<Transform>(
     object,
     Transform {

@@ -3,6 +3,8 @@
 #include <array>
 #include <queue>
 #include <cassert>
+#include <string>
+#include <unordered_map>
 
 #include "types.h"
 
@@ -21,6 +23,12 @@ class EntityManager {
       availableEntities_.pop();
       ++activeEntityCount_;
 
+      return id;
+    }
+
+    Entity createEntity(const std::string& name) {
+      Entity id = createEntity();
+      namedEntities_.insert({ name, id });
       return id;
     }
 
@@ -44,6 +52,10 @@ class EntityManager {
       return signatures_[entity];
     }
 
+    Entity getNamedEntity(const std::string& name) {
+      return namedEntities_[name];
+    }
+
     uint32_t activeEntityCount() {
       return activeEntityCount_;
     }
@@ -52,4 +64,5 @@ class EntityManager {
     std::queue<Entity> availableEntities_{};
     std::array<Signature, MAX_ENTITIES> signatures_{};
     uint32_t activeEntityCount_{};
+    std::unordered_map<std::string, Entity> namedEntities_{};
 };

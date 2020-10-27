@@ -20,10 +20,18 @@ class Context {
       return entityManager_->createEntity();
     }
 
+    Entity createEntity(const std::string& name) {
+      return entityManager_->createEntity(name);
+    }
+
     void deleteEntity(Entity entity) {
       entityManager_->deleteEntity(entity);
       componentManager_->entityDeleted(entity);
       systemManager_->entityDeleted(entity);
+    }
+
+    Entity getNamedEntity(const std::string& name) {
+      return entityManager_->getNamedEntity(name);
     }
 
     // Component

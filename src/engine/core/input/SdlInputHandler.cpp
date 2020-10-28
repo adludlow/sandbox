@@ -41,6 +41,9 @@ void SdlInputHandler::handleInput(float dt) {
       case SDL_QUIT:
         events.push_back(InputEvent::QuitToDesktop);
         break;
+      case SDL_MOUSEMOTION:
+        events.push_back(InputEvent::MouseMove);
+        break;
     }
   }
 

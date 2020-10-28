@@ -59,6 +59,8 @@ class CameraSystem : public System, public InputObserver {
             case InputEvent::MoveLeft:
               camera.position -= camera.right * velocity;
               break;
+            case InputEvent::MouseMove:
+              break;
           }
         }
       }

@@ -124,7 +124,7 @@ int main (int argc, char** argv) {
   ctx->addComponent<Transform>(
     object,
     Transform {
-      .position = glm::vec3(0.0f, 0.0f, -10.0f),
+      .position = glm::vec3(0.0f, 0.0f, -1.0f),
       .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
       .scale = glm::vec3(0.5f, 0.5f, 0.5f)
     }
@@ -132,8 +132,8 @@ int main (int argc, char** argv) {
   ctx->addComponent<Geometry>(
     object,
     //util::importShape("/home/aludlow/projects/gamedev/sphere.obj")
-    //util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
-    util::importShape("/home/aludlow/projects/gamedev/cube.obj")
+    util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
+    //util::importShape("/home/aludlow/projects/gamedev/cube.obj")
   );
 
   Entity camera = ctx->createEntity("camera");
@@ -144,7 +144,7 @@ int main (int argc, char** argv) {
       .front = glm::vec3(0.0f, 0.0f, -1.0f),
       .up = glm::vec3(0.0f, 1.0f, 0.0f),
       .right = glm::vec3(1.0f, 0.0f, 0.0f),
-      .speed = 0.005f
+      .speed = 0.01f
     }
   );
 

@@ -130,10 +130,8 @@ class GlRenderSystem : public System {
         auto rotMat = glm::toMat4(rotQuat);
         auto proj = glm::perspective(glm::radians(45.0f), ratio_, 0.1f, 100.0f);
 
-        //auto trans = transMat * rotMat * scaleMat;
-        std::cout << camera.position << " " << camera.front << " " << camera.up << " " << camera.right << std::endl;
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
-        glm::mat4 trans = view * transMat * rotMat * scaleMat;
+        glm::mat4 trans = proj * view * transMat * rotMat * scaleMat;
         unsigned int transformLoc = glGetUniformLocation(glProgramId_, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         // Vertices

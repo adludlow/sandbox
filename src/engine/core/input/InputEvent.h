@@ -11,5 +11,6 @@ enum class InputEvent {
   StopRotating,
   Shoot,
   StopShoot,
-  QuitToDesktop
+  QuitToDesktop,
+  MouseMove
 };

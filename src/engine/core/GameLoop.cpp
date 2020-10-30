@@ -16,8 +16,8 @@ GameLoop::GameLoop(
 
 void GameLoop::onNotifyInput(const std::vector<InputEvent>& events, float dt) {
   for (auto event: events) {
-    switch (event) {
-      case InputEvent::QuitToDesktop:
+    switch (event.type) {
+      case InputEventType::QuitToDesktop:
         running_ = false;
         break;
       default:

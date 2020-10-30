@@ -36,29 +36,29 @@ class PlayerControlSystem : public System, public InputObserver {
 
     void onNotifyInput(const std::vector<InputEvent>& events, float dt) override {
       for (auto event: events) {
-        switch (event) {
-          case InputEvent::MoveForwards:
+        switch (event.type) {
+          case InputEventType::MoveForwards:
             // Move player up
             for (auto const& entity : entities_) {
               auto& transform = ctx->getComponent<Transform>(entity);
               transform.position.y += 0.1;
             }
             break;
-          case InputEvent::MoveBackwards:
+          case InputEventType::MoveBackwards:
             // Move player down
             for (auto const& entity : entities_) {
               auto& transform = ctx->getComponent<Transform>(entity);
               transform.position.y -= 0.1;
             }
             break;
-          case InputEvent::RotateClockwise:
+          case InputEventType::RotateClockwise:
             // Rotate player clockwise
             for (auto const& entity : entities_) {
               auto& transform = ctx->getComponent<Transform>(entity);
               transform.rotation.y += 0.1;
             }
             break;
-          case InputEvent::RotateAntiClockwise:
+          case InputEventType::RotateAntiClockwise:
             // Rotate player anti clockwise
             for (auto const& entity : entities_) {
               auto& transform = ctx->getComponent<Transform>(entity);

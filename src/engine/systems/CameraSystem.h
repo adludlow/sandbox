@@ -46,20 +46,20 @@ class CameraSystem : public System, public InputObserver {
         auto& camera = ctx->getComponent<Camera>(entity);
         float velocity = camera.speed * dt;
         for (InputEvent event: events) {
-          switch (event) {
-            case InputEvent::MoveForwards:
+          switch (event.type) {
+            case InputEventType::MoveForwards:
               camera.position += camera.front * velocity;
               break;
-            case InputEvent::MoveBackwards:
+            case InputEventType::MoveBackwards:
               camera.position -= camera.front * velocity;
               break;
-            case InputEvent::MoveRight:
+            case InputEventType::MoveRight:
               camera.position += camera.right * velocity;
               break;
-            case InputEvent::MoveLeft:
+            case InputEventType::MoveLeft:
               camera.position -= camera.right * velocity;
               break;
-            case InputEvent::MouseMove:
+            case InputEventType::MouseMove:
               break;
           }
         }

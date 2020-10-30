@@ -1,6 +1,6 @@
 #pragma once
 
-enum class InputEvent {
+enum class InputEventType {
   MoveForwards,
   MoveBackwards,
   MoveLeft,
@@ -13,4 +13,13 @@ enum class InputEvent {
   StopShoot,
   QuitToDesktop,
   MouseMove
+};
+
+struct InputEvent {
+  InputEventType type;
+  union {
+    struct {
+      int x, y, xrel, yrel;
+    } mouseMove;
+  };
 };

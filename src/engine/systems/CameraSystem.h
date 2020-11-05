@@ -60,6 +60,21 @@ class CameraSystem : public System, public InputObserver {
               camera.position -= camera.right * velocity;
               break;
             case InputEventType::MouseMove:
+              float xOffset = event.mouseMove.x * sensitivity_;
+              float yOffset = event.mouseMove.y * sensitivity_;
+              camera.yaw += xOffset;
+              camera.pitch += yOffset;
+
+              // calculate the new Front vector
+              glm::vec3 front;
+              front.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+              front.y = sin(glm::radians(camera.pitch));
+              front.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+              camera.front = glm::normalize(front);
+              // also re-calculate the Right and Up vector
+              camera.right = glm::normalize(glm::cross(camera.front, camera.worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+              camera.up = glm::normalize(glm::cross(camera.right, camera.front));
+
               break;
           }
         }
@@ -69,4 +84,5 @@ class CameraSystem : public System, public InputObserver {
   private:
     std::set<Entity> entities_;
     std::string id_;
+    float sensitivity_ { 0.1f };
 };

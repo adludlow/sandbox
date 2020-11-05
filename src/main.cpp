@@ -144,7 +144,9 @@ int main (int argc, char** argv) {
       .front = glm::vec3(0.0f, 0.0f, -1.0f),
       .up = glm::vec3(0.0f, 1.0f, 0.0f),
       .right = glm::vec3(1.0f, 0.0f, 0.0f),
-      .speed = 0.01f
+      .direction = glm::vec3(0.0f, 0.0f, 0.0f),
+      .worldUp = glm::vec3(0.0f, 1.0f, 0.0f),
+      .speed = 0.01f,
     }
   );
 

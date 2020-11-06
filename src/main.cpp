@@ -3,9 +3,17 @@
 #include <string>
 
 #include <SDL.h>
-#include <GL/glew.h>
 #include <SDL_opengl.h>
+
+#ifdef __APPLE__
+#define GLEW_OK 0
+inline int glewInit() { return GLEW_OK; }
+inline char* glewGetErrorString(int p) { return "dummy"; }
+bool glewExperimental = true;
+#else
+#include <GL/glew.h>
 #include <GL/glu.h>
+#endif
 
 #include "util/json/json11.hpp"
 #include "util/string.h"
@@ -47,7 +55,7 @@ int main (int argc, char** argv) {
     return 1;
   }
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
   SDL_Window* window = SDL_CreateWindow(
@@ -107,7 +115,7 @@ int main (int argc, char** argv) {
     signature.set(ctx->getComponentType<Geometry>());
     ctx->setSystemSignature<GlRenderSystem>(signature);
 
-    renderSystem->init(window);
+    renderSystem->init(window, config);
   }
 
   auto playerControlSystem = ctx->registerSystem<PlayerControlSystem>();
@@ -131,8 +139,9 @@ int main (int argc, char** argv) {
   );
   ctx->addComponent<Geometry>(
     object,
+    util::importShape(config["shapefile"].string_value())
     //util::importShape("/home/aludlow/projects/gamedev/sphere.obj")
-    util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
+    //util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
     //util::importShape("/home/aludlow/projects/gamedev/cube.obj")
   );
 

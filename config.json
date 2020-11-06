@@ -1,6 +1,7 @@
 {
   "width": 1600,
   "height": 900,
-  "shape_files": "/home/aludlow/projects/gamedev/sandbox/shapes"
+  "shapefile": "/Users/aludlow/projects/other/gd/sphere.obj",
+  "shader_dir": "/Users/aludlow/projects/other/gd/sandbox/src/shaders"
 }
 

@@ -2,10 +2,19 @@
 
 #include <iostream>
 
-#include <SDL.h>
+#ifdef __APPLE__
+//#include <OpenGL/gl.h>
+//#include <OpenGL/glu.h>
+#include <OpenGL/gl3.h>
+//#include <OpenGL/gl3ext.h>
+//#include <OpenGL/glext.h>
+#else
 #include <GL/glew.h>
-#include <SDL_opengl.h>
 #include <GL/glu.h>
+#endif
+
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -14,6 +23,7 @@
 
 #include "../core/System.h"
 #include "../../util/io.h"
+#include "../../util/json/json11.hpp"
 
 extern std::shared_ptr<Context> ctx;
 
@@ -37,7 +47,7 @@ class GlRenderSystem : public System {
       entities_.erase(entity);
     }
     
-    void init(SDL_Window* window) {
+    void init(SDL_Window* window, json11::Json config) {
       window_ = window;
       int width, height = 0;
       SDL_GetWindowSize(window_, &width, &height);
@@ -49,7 +59,7 @@ class GlRenderSystem : public System {
       // Create vertex shader
       GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
       // Load vertex shader
-      std::string vertexString = util::loadFile("/home/aludlow/projects/gamedev/sandbox/src/shaders/vertex.glsl");
+      std::string vertexString = util::loadFile(config["shader_dir"].string_value() + "/vertex.glsl");
       const GLchar* vertexShaderSource = vertexString.c_str();
       glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
       glCompileShader(vertexShader);
@@ -63,7 +73,7 @@ class GlRenderSystem : public System {
 
       // Create fragment shader
       GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-      std::string fragmentString = util::loadFile("/home/aludlow/projects/gamedev/sandbox/src/shaders/fragment.glsl");
+      std::string fragmentString = util::loadFile(config["shader_dir"].string_value() + "/fragment.glsl");
       const GLchar* fragmentShaderSource = fragmentString.c_str();
       glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
       glCompileShader(fragmentShader);

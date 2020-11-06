@@ -60,10 +60,10 @@ class CameraSystem : public System, public InputObserver {
               camera.position -= camera.right * velocity;
               break;
             case InputEventType::MouseMove:
-              float xOffset = event.mouseMove.x * sensitivity_;
-              float yOffset = event.mouseMove.y * sensitivity_;
+              float xOffset = event.mouseMove.xrel * sensitivity_;
+              float yOffset = event.mouseMove.yrel * sensitivity_;
               camera.yaw += xOffset;
-              camera.pitch += yOffset;
+              camera.pitch -= yOffset;
 
               // calculate the new Front vector
               glm::vec3 front;

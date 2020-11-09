@@ -3,11 +3,7 @@
 #include <iostream>
 
 #ifdef __APPLE__
-//#include <OpenGL/gl.h>
-//#include <OpenGL/glu.h>
 #include <OpenGL/gl3.h>
-//#include <OpenGL/gl3ext.h>
-//#include <OpenGL/glext.h>
 #else
 #include <GL/glew.h>
 #include <GL/glu.h>

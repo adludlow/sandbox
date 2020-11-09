@@ -2,9 +2,6 @@
 #include <cstdlib>
 #include <string>
 
-#include <SDL.h>
-#include <SDL_opengl.h>
-
 #ifdef __APPLE__
 #define GLEW_OK 0
 inline int glewInit() { return GLEW_OK; }
@@ -14,6 +11,9 @@ bool glewExperimental = true;
 #include <GL/glew.h>
 #include <GL/glu.h>
 #endif
+
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 #include "util/json/json11.hpp"
 #include "util/string.h"

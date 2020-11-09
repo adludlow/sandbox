@@ -47,7 +47,7 @@ add_executable(
 
 if(NOT APPLE)
   set(SDL_LIBS /usr/lib/libSDL2.so /usr/lib/libSDL2_image.so)
-  set(GLEW_LIB /usr/lib/libGlew.so)
+  set(GLEW_LIB /usr/lib/libGLEW.so)
   set(GL_LIB /usr/lib/libGL.so)
 endif()
 target_link_libraries(sandbox ${SDL_LIBS} ${GLEW_LIB} ${GL_LIB})

@@ -153,11 +153,11 @@ class GlRenderSystem : public System {
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDrawElements(GL_TRIANGLES, geometry.indices.size(), GL_UNSIGNED_INT, 0);
-        SDL_GL_SwapWindow(window_);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
       }
+      SDL_GL_SwapWindow(window_);
+
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glBindVertexArray(0);
     }
   
   private:

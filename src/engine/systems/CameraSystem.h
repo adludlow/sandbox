@@ -84,5 +84,5 @@ class CameraSystem : public System, public InputObserver {
   private:
     std::set<Entity> entities_;
     std::string id_;
-    float sensitivity_ { 0.1f };
+    float sensitivity_ { 0.07f };
 };

@@ -19,12 +19,12 @@ bool glewExperimental = true;
 #include "util/string.h"
 #include "util/import.h"
 #include "util/io.h"
+#include "util/random.h"
 #include "engine/core/Context.h"
 #include "engine/core/GameLoop.h"
 #include "engine/components/Transform.h"
 #include "engine/components/Geometry.h"
 #include "engine/components/Camera.h"
-//#include "engine/systems/SdlRenderSystem.h"
 #include "engine/systems/GlRenderSystem.h"
 #include "engine/systems/PlayerControlSystem.h"
 #include "engine/systems/CameraSystem.h"
@@ -70,13 +70,7 @@ int main (int argc, char** argv) {
     printf("Window could not be created. SDL_Error: %s\n", SDL_GetError());
     return 2;
   }
-  /*
-  SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-  if (renderer == nullptr) {
-    printf("Renderer could not be created. SDL Error: %s\n", SDL_GetError());
-    return 3;
-  }
-  */
+
   SDL_GLContext gContext = SDL_GL_CreateContext(window);
   if (gContext == nullptr) {
     printf("OpenGL context could not be created: %s\n", SDL_GetError());
@@ -128,22 +122,27 @@ int main (int argc, char** argv) {
     //inputHandler->addObserver(playerControlSystem.get());
   }
 
-  Entity object = ctx->createEntity();
-  ctx->addComponent<Transform>(
-    object,
-    Transform {
-      .position = glm::vec3(0.0f, 0.0f, -1.0f),
-      .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-      .scale = glm::vec3(0.5f, 0.5f, 0.5f)
-    }
-  );
-  ctx->addComponent<Geometry>(
-    object,
-    util::importShape(config["shapefile"].string_value())
-    //util::importShape("/home/aludlow/projects/gamedev/sphere.obj")
-    //util::importShape("/home/aludlow/projects/gamedev/monkey.obj")
-    //util::importShape("/home/aludlow/projects/gamedev/cube.obj")
-  );
+  Geometry geom = util::importShape(config["shapefile"].string_value());
+  // Create random scene
+  for (int i = 0; i < 1000; i++) {
+    float x = util::random(-100.0f, 100.0f);
+    float y = util::random(-100.0f, 100.0f);
+    float z = util::random(-100.0f, 100.0f);
+
+    Entity object = ctx->createEntity();
+    ctx->addComponent<Transform>(
+      object,
+      Transform {
+        .position = glm::vec3(x, y, z),
+        .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
+        .scale = glm::vec3(0.5f, 0.5f, 0.5f)
+      }
+    );
+    ctx->addComponent<Geometry>(
+      object,
+      geom
+    );
+  }
 
   Entity camera = ctx->createEntity("camera");
   ctx->addComponent<Camera>(

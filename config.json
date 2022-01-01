@@ -2,6 +2,7 @@
   "width": 1600,
   "height": 900,
   "shapefile": "/home/aludlow/projects/gamedev/sphere.obj",
-  "shader_dir": "/home/aludlow/projects/gamedev/sandbox/src/shaders"
+  "shader_dir": "/home/aludlow/projects/gamedev/sandbox/src/shaders",
+  "camera_speed": 0.2
 }
 

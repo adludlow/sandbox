@@ -124,10 +124,10 @@ int main (int argc, char** argv) {
 
   Geometry geom = util::importShape(config["shapefile"].string_value());
   // Create random scene
-  for (int i = 0; i < 1000; i++) {
-    float x = util::random(-100.0f, 100.0f);
-    float y = util::random(-100.0f, 100.0f);
-    float z = util::random(-100.0f, 100.0f);
+  for (int i = 0; i < 10000; i++) {
+    float x = util::random(-1000.0f, 1000.0f);
+    float y = util::random(-1000.0f, 1000.0f);
+    float z = util::random(-1000.0f, 1000.0f);
 
     Entity object = ctx->createEntity();
     ctx->addComponent<Transform>(
@@ -154,7 +154,7 @@ int main (int argc, char** argv) {
       .right = glm::vec3(1.0f, 0.0f, 0.0f),
       .direction = glm::vec3(0.0f, 0.0f, 0.0f),
       .worldUp = glm::vec3(0.0f, 1.0f, 0.0f),
-      .speed = 0.01f,
+      .speed = config["camera_speed"].number_value(),
     }
   );
 

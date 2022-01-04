@@ -44,6 +44,7 @@ class CameraSystem : public System, public InputObserver {
     void onNotifyInput(const std::vector<InputEvent>& events, float dt) {
       for (auto entity: entities_) {
         auto& camera = ctx->getComponent<Camera>(entity);
+        std::cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << std::endl;
         float velocity = camera.speed * dt;
         for (InputEvent event: events) {
           switch (event.type) {

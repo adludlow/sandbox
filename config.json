@@ -1,8 +1,12 @@
 {
   "width": 1600,
   "height": 900,
-  "shapefile": "/home/aludlow/projects/gamedev/sphere.obj",
-  "shader_dir": "/home/aludlow/projects/gamedev/sandbox/src/shaders",
-  "camera_speed": 0.2
+  "shapefile": "C:/Users/aludlow/source/gamedev/small_sphere.obj",
+  "shapeScaleX": 0.1,
+  "shapeScaleY": 0.1,
+  "shapeScaleZ": 0.1,
+  "shader_dir": "C:/Users/aludlow/source/gamedev/sandbox/src/shaders",
+  "star_data": "c:/Users/aludlow/source/gamedev/stars.csv",
+  "camera_speed": 0.01
 }
 

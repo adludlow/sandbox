@@ -17,9 +17,7 @@ enum class InputEventType {
 
 struct InputEvent {
   InputEventType type;
-  union {
-    struct {
-      int x, y, xrel, yrel;
-    } mouseMove;
-  };
+  struct {
+    int x, y, xrel, yrel;
+  } mouseMove;
 };

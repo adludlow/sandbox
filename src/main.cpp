@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <string>
 
@@ -20,6 +21,7 @@ bool glewExperimental = true;
 #include "util/import.h"
 #include "util/io.h"
 #include "util/random.h"
+#include "util/csv/CSVRow.h"
 #include "engine/core/Context.h"
 #include "engine/core/GameLoop.h"
 #include "engine/components/Transform.h"
@@ -123,19 +125,36 @@ int main (int argc, char** argv) {
   }
 
   Geometry geom = util::importShape(config["shapefile"].string_value());
-  // Create random scene
-  for (int i = 0; i < 10000; i++) {
-    float x = util::random(-1000.0f, 1000.0f);
-    float y = util::random(-1000.0f, 1000.0f);
-    float z = util::random(-1000.0f, 1000.0f);
+
+  struct Star {
+    std::string sourceId;
+    float x, y, z, distFromOrigin;
+  };
+
+  std::ifstream starFile(config["star_data"].string_value());
+  util::csv::CSVRow row;
+  std::vector<Star> stars;
+  while(starFile >> row) {
+    stars.push_back(Star { .sourceId = std::string(row[0]), .x = ::atof(row[1].data()), .y = ::atof(row[2].data()), .z = ::atof(row[3].data()), .distFromOrigin = ::atof(row[4].data()) });
+  }
+
+  // Create star entities
+  double shapeScaleX = config["shapeScaleX"].is_null() ? 1.0f : config["shapeScaleX"].number_value();
+  double shapeScaleY = config["shapeScaleY"].is_null() ? 1.0f : config["shapeScaleY"].number_value();
+  double shapeScaleZ = config["shapeScaleZ"].is_null() ? 1.0f : config["shapeScaleZ"].number_value();
+  for (auto i : stars) {
+    auto x = i.x;
+    auto y = i.y;
+    auto z = i.z;
 
     Entity object = ctx->createEntity();
+
     ctx->addComponent<Transform>(
       object,
       Transform {
         .position = glm::vec3(x, y, z),
         .rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-        .scale = glm::vec3(0.5f, 0.5f, 0.5f)
+        .scale = glm::vec3(shapeScaleX, shapeScaleY, shapeScaleZ)
       }
     );
     ctx->addComponent<Geometry>(
@@ -148,7 +167,7 @@ int main (int argc, char** argv) {
   ctx->addComponent<Camera>(
     camera,
     Camera { 
-      .position = glm::vec3(0.0f, 0.0f, 3.0f),
+      .position = glm::vec3(0.0f, 0.0f, 0.0f),
       .front = glm::vec3(0.0f, 0.0f, -1.0f),
       .up = glm::vec3(0.0f, 1.0f, 0.0f),
       .right = glm::vec3(1.0f, 0.0f, 0.0f),

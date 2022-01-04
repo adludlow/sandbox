@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 project(sandbox)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${sandbox_SOURCE_DIR}/cmake")
 
 set(BIN_DIR ${sandbox}/bin)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -std=c++17")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -std=c++20")
 if(APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__gl_h_")
   if(FRAMEWORKS_LOC)
@@ -45,12 +45,16 @@ add_executable(
   src/util/io.cpp
 )
 
-if(NOT APPLE)
-  set(SDL_LIBS /usr/lib/libSDL2.so /usr/lib/libSDL2_image.so)
+if(UNIX)
+  set(SDL_LIB /usr/lib/libSDL2.so)
+  set(SDLMAIN_LIB /usr/lib/libSDL2_image.so)
   set(GLEW_LIB /usr/lib/libGLEW.so)
   set(GL_LIB /usr/lib/libGL.so)
+elseif(WIN32)
+  set(GL_LIB C:\\Windows\\System32\\opengl32.dll)
+  set(BCRYPT_LIB C:\\Windows\\System32\\bcrypt.dll)
 endif()
-target_link_libraries(sandbox ${SDL_LIBS} ${GLEW_LIB} ${GL_LIB})
+target_link_libraries(sandbox ${SDL_LIB} ${SDLMAIN_LIB} ${GLEW_LIB} ${BCRYPT_LIB} ${GL_LIB})
 
 install(TARGETS sandbox RUNTIME DESTINATION ${BIN_DIR})
 

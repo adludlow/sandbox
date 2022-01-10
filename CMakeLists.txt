@@ -38,6 +38,7 @@ add_executable(
   src/engine/core/input/SdlInputHandler.cpp
   src/engine/Timer.cpp
   src/engine/core/GameLoop.cpp
+  src/engine/core/ResourceManager.cpp
   src/util/import.cpp
   src/util/random.cpp
   src/util/uuid.cpp

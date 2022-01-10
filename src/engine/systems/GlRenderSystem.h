@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GL_RENDER_SYSTEM_H
+#define GL_RENDER_SYSTEM_H
 
 #include <iostream>
 
@@ -18,6 +19,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "../core/System.h"
+#include "../core/Shader.h"
+#include "../core/ResourceManager.h"
 #include "../../util/io.h"
 #include "../../util/json/json11.hpp"
 
@@ -49,47 +52,8 @@ class GlRenderSystem : public System {
       SDL_GetWindowSize(window_, &width, &height);
       ratio_ = width/height;
 
-      // Create program to attach shaders to.
-      glProgramId_ = glCreateProgram();
-
-      // Create vertex shader
-      GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-      // Load vertex shader
-      std::string vertexString = util::loadFile(config["shader_dir"].string_value() + "/vertex.glsl");
-      const GLchar* vertexShaderSource = vertexString.c_str();
-      glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-      glCompileShader(vertexShader);
-      int success;
-      char infoLog[512];
-      glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-      if (!success) {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "Vertex shader compilation failed: " << infoLog << std::endl;
-      }
-
-      // Create fragment shader
-      GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-      std::string fragmentString = util::loadFile(config["shader_dir"].string_value() + "/fragment.glsl");
-      const GLchar* fragmentShaderSource = fragmentString.c_str();
-      glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-      glCompileShader(fragmentShader);
-      glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-      if (!success) {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "Fragment shader compilation failed: " << infoLog << std::endl;
-      }
-
-      glAttachShader(glProgramId_, vertexShader);
-      glAttachShader(glProgramId_, fragmentShader);
-      glLinkProgram(glProgramId_);
-      glGetProgramiv(glProgramId_, GL_LINK_STATUS, &success);
-      if (!success) {
-        glGetProgramInfoLog(glProgramId_, 512, NULL, infoLog);
-        std::cout << "Shader linking failed: " << infoLog << std::endl;
-      }
-
-      glDeleteShader(vertexShader);
-      glDeleteShader(fragmentShader);
+      std::string shaderDir = config["shader_dir"].string_value();
+      this->shader_ = ResourceManager::loadShader(shaderDir + "/vertex.glsl", shaderDir + "/fragment.glsl", "geomShader");
 
       glGenVertexArrays(1, &glVao_);
       // Generate vertex and element buffer object
@@ -120,7 +84,7 @@ class GlRenderSystem : public System {
       glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
       glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      glUseProgram(glProgramId_);
+      this->shader_.use();
       glBindVertexArray(glVao_);
 
       for (auto entity : entities_) {
@@ -138,7 +102,7 @@ class GlRenderSystem : public System {
 
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
         glm::mat4 trans = proj * view * transMat * rotMat * scaleMat;
-        unsigned int transformLoc = glGetUniformLocation(glProgramId_, "transform");
+        unsigned int transformLoc = glGetUniformLocation(this->shader_.id, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         // Vertices
         glBindBuffer(GL_ARRAY_BUFFER, glVbo_);
@@ -160,9 +124,11 @@ class GlRenderSystem : public System {
     std::set<Entity> entities_{};
 
     SDL_Window* window_{};
-    GLuint glProgramId_{};
+    Shader shader_;
     GLuint glVao_{};
     GLuint glVbo_{};
     GLuint glEbo_{};
     float ratio_{0.0f};
 };
+
+#endif // GL_RENDER_SYSTEM_H

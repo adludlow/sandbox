@@ -5,6 +5,7 @@
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "SystemManager.h"
+#include "ResourceManager.h"
 #include "./input/InputHandler.h"
 
 class Context {
@@ -83,6 +84,7 @@ class Context {
       systemManager_->setSignature<T>(signature);
     }
 
+    // Input
     void registerInputHandler(std::shared_ptr<InputHandler> inputHandler) {
       inputHandler_ = inputHandler;
     }

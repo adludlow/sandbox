@@ -5,8 +5,9 @@
 #include <string>
 #include <map>
 
-#include <glm/type_vec.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include "../core/System.h"
 
@@ -35,6 +36,7 @@ class TestRenderSystem : public System {
 
     void loadFont(const std::string& font, const unsigned int fontSize) {
       std::map<char, Character> characters {};
+      FT_Library ft;
 
     }
 

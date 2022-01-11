@@ -30,6 +30,7 @@ bool glewExperimental = true;
 #include "engine/systems/GlRenderSystem.h"
 #include "engine/systems/PlayerControlSystem.h"
 #include "engine/systems/CameraSystem.h"
+#include "engine/systems/TextRenderSystem.h"
 #include "engine/core/input/SdlInputHandler.h"
 
 std::shared_ptr<Context> ctx = std::make_shared<Context>();

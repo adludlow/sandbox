@@ -6,7 +6,7 @@
   "shapeScaleY": 0.1,
   "shapeScaleZ": 0.1,
   "shader_dir": "C:/Users/aludlow/source/gamedev/sandbox/src/shaders",
-  "star_data": "c:/Users/aludlow/source/gamedev/stars.csv",
+  "star_data": "c:/Users/aludlow/source/gamedev/stars_10.csv",
   "camera_speed": 0.01
 }
 

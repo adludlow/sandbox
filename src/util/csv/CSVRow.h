@@ -31,6 +31,10 @@ namespace util::csv {
         m_data.emplace_back(pos);
       }
 
+      std::string raw() {
+        return this->m_line;
+      }
+
     private:
       std::string m_line;
       std::vector<int> m_data;
@@ -39,5 +43,10 @@ namespace util::csv {
   std::istream& operator>>(std::istream& str, CSVRow& data) {
     data.readNextRow(str);
     return str;
+  }
+
+  std::ostream& operator<<(std::ostream& os, CSVRow& data) {
+    os << data.raw();
+    return os;
   }
 }

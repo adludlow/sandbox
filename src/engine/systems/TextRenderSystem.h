@@ -6,11 +6,23 @@
 #include <map>
 #include <iostream>
 
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <GL/glew.h>
+#include <GL/glu.h>
+#endif
+
+#include <SDL.h>
+#include <SDL_opengl.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 #include "../core/System.h"
+#include "../core/Shader.h"
+#include "../../util/json/json11.hpp"
 
 extern std::shared_ptr<Context> ctx;
 
@@ -21,7 +33,7 @@ struct Character {
   unsigned int advance;
 };
 
-class TestRenderSystem : public System {
+class TextRenderSystem : public System {
   public:
     std::set<Entity> entities() override {
       return entities_;
@@ -35,7 +47,7 @@ class TestRenderSystem : public System {
       entities_.erase(entity);
     }
 
-    void loadFont(const std::string& font, const unsigned int fontSize) {
+    void loadFont(const std::string& fontLoc, const std::string& fontName, const unsigned int fontSize) {
       std::map<char, Character> characters {};
       FT_Library ft;
       if (FT_Init_FreeType(&ft)) {
@@ -43,8 +55,8 @@ class TestRenderSystem : public System {
       }
 
       FT_Face face;
-      if (FT_New_Face(ft, font.c_str(), 0, &face)) {
-        std::cerr << "ERROR::FREETYPE: Failed to load font: " << font << std::endl;
+      if (FT_New_Face(ft, fontLoc.c_str(), 0, &face)) {
+        std::cerr << "ERROR::FREETYPE: Failed to load font: " << fontLoc << std::endl;
       }
 
       // Set font size
@@ -87,22 +99,113 @@ class TestRenderSystem : public System {
         };
         characters.insert(std::pair<char, Character>(c, character));
       }
-      glBindTexture(GL_TEXTURE_2D, 0);
+      fonts_.insert(std::make_pair(std::make_pair(fontName, fontSize), characters));
+
       // Cleanup
+      glBindTexture(GL_TEXTURE_2D, 0);
       FT_Done_Face(face);
       FT_Done_FreeType(ft);
     }
 
-    void init() {
+    void init(unsigned int width, unsigned int height, SDL_Window* window, json11::Json config) {
+      this->window_ = window;
+      this->projMat_ = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), 0.1f, 500.0f);
+
+      std::string shaderDir = config["shader_dir"].string_value();
+      this->shader_ = ResourceManager::loadShader(shaderDir + "/text_2d_vert.glsl", shaderDir + "/text_2d_frag.glsl", "textShader");
+      ratio_ = width/height;
+      //this->shader_.setMatrix4("projection", glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f), true);
+      this->shader_.setInteger("text", 0);
+
+      glGenVertexArrays(1, &this->glVao_);
+      glGenBuffers(1, &this->glVbo_);
+      glBindVertexArray(this->glVao_);
+      glBindBuffer(GL_ARRAY_BUFFER, this->glVbo_);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 6, NULL, GL_DYNAMIC_DRAW);
+      glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+      glEnableVertexAttribArray(0);
+      glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(4 * sizeof(float)));
+      glEnableVertexAttribArray(1);
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glBindVertexArray(0);
+
       // Load fonts
+      loadFont("C:/Users/aludlow/source/gamedev/sandbox/resources/fonts/OCRAEXT.TTF", "OCRAEXT", 24);
     }
 
     void update(float dt) override {
+      this->shader_.use();
+      glActiveTexture(GL_TEXTURE0);
+      glBindVertexArray(this->glVao_);
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+      for (auto entity : this->entities_) {
+        auto& text = ctx->getComponent<Text>(entity);
+        this->shader_.setVector3f("textColour", text.colour);
+        auto& transform = ctx->getComponent<Transform>(entity);
+        float x = transform.position.x;
+        float y = transform.position.y;
+
+        Entity cameraEntity = ctx->getNamedEntity("camera");
+        auto& camera = ctx->getComponent<Camera>(cameraEntity);
+
+        auto transMat = glm::translate(glm::mat4(1.0f), transform.position);
+        auto scaleMat = glm::scale(glm::mat4(1.0f), transform.scale);
+        auto rotQuat = glm::quat(glm::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 0.0));
+        auto rotMat = glm::toMat4(rotQuat);
+        auto proj = glm::perspective(glm::radians(45.0f), ratio_, 0.1f, 500.0f);
+        glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
+        glm::mat4 trans = this->projMat_ * view * transMat * scaleMat;
+
+        unsigned int transformLoc = glGetUniformLocation(this->shader_.id, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+        std::map<char, Character> glyphs = this->fonts_[std::make_pair("OCRAEXT", 24)];
+        std::string::const_iterator c;
+        for (c = text.text.begin(); c != text.text.end(); c++) {
+          Character ch = glyphs[*c];
+
+          float xpos = x + ch.bearing.x;
+          float ypos = y + (glyphs['H'].bearing.y - ch.bearing.y);
+          float w = ch.size.x;
+          float h = ch.size.y;
+          float vertices[6][6] = {
+            { xpos,     ypos + h, 0.0f, 1.0f, 0.0f, 0.0f },
+            { xpos + w, ypos,     0.0f, 1.0f, 1.0f, 1.0f },
+            { xpos,     ypos,     0.0f, 1.0f, 0.0f, 1.0f },
+            
+            { xpos,     ypos + h, 0.0f, 1.0f, 0.0f, 0.0f },
+            { xpos + w, ypos + h, 0.0f, 1.0f, 1.0f, 0.0f },
+            { xpos + w, ypos,     0.0f, 1.0f, 1.0f, 1.0f }
+          };
+
+          glBindTexture(GL_TEXTURE_2D, ch.textureId);
+          // Update contents of VBO memory
+          glBindBuffer(GL_ARRAY_BUFFER, this->glVbo_);
+          glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+          glBindBuffer(GL_ARRAY_BUFFER, 0);
+          // Render quad
+          glDrawArrays(GL_TRIANGLES, 0, 6);
+          x += (ch.advance >> 6);
+        }
+      }
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glBindVertexArray(0);
+      glBindTexture(GL_TEXTURE_2D, 0);
     }
 
   private:
+    SDL_Window* window_{};
     std::set<Entity> entities_{};
+    std::map<std::pair<std::string, unsigned int>, std::map<char, Character>> fonts_{};
+    Shader shader_;
+    GLuint glVao_{};
+    GLuint glVbo_{};
+    glm::mat4 projMat_{};
+    float ratio_{0.0f};
 };
 
 #endif //TEXT_RENDER_SYSTEM_H

@@ -23,6 +23,20 @@
           "ignoreFailures": true
         }
       ]
+    },
+    {
+      "name": "cl.exe",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Debug/sandbox.exe",
+      "args": ["..\\..\\config.json"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build/Debug",
+      "environment": [
+        { "name": "PATH", "value": "%PATH%;C:\\DeveloperTools\\SDL2-2.0.18\\lib\\x64;C:\\DeveloperTools\\glew-2.1.0\\bin\\Release\\x64"}
+      ],
+      "externalConsole": false
     }
+
   ]
 }

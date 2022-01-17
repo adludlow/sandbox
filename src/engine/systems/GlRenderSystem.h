@@ -2,6 +2,7 @@
 #define GL_RENDER_SYSTEM_H
 
 #include <iostream>
+#include <functional>
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -47,6 +48,8 @@ class GlRenderSystem : public System {
     }
     
     void init(SDL_Window* window, json11::Json config) {
+      ctx->addPreUpdateHandler(std::bind(&GlRenderSystem::preUpdate, this));
+      ctx->addPostUpdateHandler(std::bind(&GlRenderSystem::postUpdate, this));
       window_ = window;
       int width, height = 0;
       SDL_GetWindowSize(window_, &width, &height);
@@ -81,9 +84,6 @@ class GlRenderSystem : public System {
     }
 
     void update(float dt) override {
-      glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-      glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
       this->shader_.use();
       glBindVertexArray(glVao_);
 
@@ -114,10 +114,18 @@ class GlRenderSystem : public System {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDrawElements(GL_TRIANGLES, geometry.indices.size(), GL_UNSIGNED_INT, 0);
       }
-      SDL_GL_SwapWindow(window_);
 
       glBindBuffer(GL_ARRAY_BUFFER, 0);
       glBindVertexArray(0);
+    }
+
+    void preUpdate() {
+      glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+      glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void postUpdate() {
+      SDL_GL_SwapWindow(window_);
     }
   
   private:

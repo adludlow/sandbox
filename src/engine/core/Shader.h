@@ -8,6 +8,8 @@
 #include <GL/glew.h>
 #include <GL/glu.h>
 #endif
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Shader {
   public:
@@ -46,6 +48,27 @@ class Shader {
       glDeleteShader(sVertex);
       glDeleteShader(sFragment);
 
+    }
+
+    void setInteger(const std::string& name, int value, bool useShader = false) {
+      if (useShader) {
+        this->use();
+      }
+      glUniform1i(glGetUniformLocation(this->id, name.c_str()), value);
+    }
+
+    void setMatrix4(const std::string& name, const glm::mat4& matrix, bool useShader = false) {
+      if (useShader) {
+        this->use();
+      }
+      glUniformMatrix4fv(glGetUniformLocation(this->id, name.c_str()), 1, false, glm::value_ptr(matrix));
+    }
+
+    void setVector3f(const std::string& name, const glm::vec3& value, bool useShader = false) {
+      if (useShader) {
+        this->use();
+      }
+      glUniform3f(glGetUniformLocation(this->id, name.c_str()), value.x, value.y, value.z);
     }
 
   private:

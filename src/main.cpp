@@ -27,6 +27,7 @@ bool glewExperimental = true;
 #include "engine/components/Transform.h"
 #include "engine/components/Geometry.h"
 #include "engine/components/Camera.h"
+#include "engine/components/Text.h"
 #include "engine/systems/GlRenderSystem.h"
 #include "engine/systems/PlayerControlSystem.h"
 #include "engine/systems/CameraSystem.h"
@@ -86,7 +87,7 @@ int main (int argc, char** argv) {
   if (glewError != GLEW_OK) {
     printf("Error initialising GLEW: %s\n", glewGetErrorString(glewError));
   }
-
+  
   ctx->init();
   auto inputHandler = std::make_shared<SdlInputHandler>();
   ctx->registerInputHandler(inputHandler);
@@ -94,6 +95,7 @@ int main (int argc, char** argv) {
   ctx->registerComponent<Transform>();
   ctx->registerComponent<Geometry>();
   ctx->registerComponent<Camera>();
+  ctx->registerComponent<Text>();
 
   auto cameraSystem = ctx->registerSystem<CameraSystem>();
   {
@@ -122,21 +124,34 @@ int main (int argc, char** argv) {
     ctx->setSystemSignature<PlayerControlSystem>(signature);
 
     playerControlSystem->init();
-    //inputHandler->addObserver(playerControlSystem.get());
+    inputHandler->addObserver(playerControlSystem.get());
+  }
+
+  auto textRenderSystem = ctx->registerSystem<TextRenderSystem>();
+  {
+    Signature signature;
+    signature.set(ctx->getComponentType<Transform>());
+    signature.set(ctx->getComponentType<Text>());
+    ctx->setSystemSignature<TextRenderSystem>(signature);
+
+    textRenderSystem->init(width, height, window, config);
   }
 
   Geometry geom = util::importShape(config["shapefile"].string_value());
 
   struct Star {
     std::string sourceId;
-    float x, y, z, distFromOrigin;
+    double x, y, z, distFromOrigin;
+    std::string name;
   };
 
   std::ifstream starFile(config["star_data"].string_value());
   util::csv::CSVRow row;
   std::vector<Star> stars;
+  // Process header
+  starFile >> row;
   while(starFile >> row) {
-    stars.push_back(Star { .sourceId = std::string(row[0]), .x = ::atof(row[1].data()), .y = ::atof(row[2].data()), .z = ::atof(row[3].data()), .distFromOrigin = ::atof(row[4].data()) });
+    stars.push_back(Star { .sourceId = std::string(row[0]), .x = ::atof(row[1].data()), .y = ::atof(row[2].data()), .z = ::atof(row[3].data()), .distFromOrigin = ::atof(row[4].data()), .name = std::string(row[5].data()) });
   }
 
   // Create star entities
@@ -161,6 +176,14 @@ int main (int argc, char** argv) {
     ctx->addComponent<Geometry>(
       object,
       geom
+    );
+    ctx->addComponent<Text>(
+      object,
+      Text {
+        .text = i.name,
+        .fontsize = 24,
+        .colour = glm::vec3(1.0f)
+      }
     );
   }
 

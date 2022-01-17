@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 
 #include "ComponentManager.h"
 #include "EntityManager.h"
@@ -90,7 +91,23 @@ class Context {
     }
 
     void update(float dt) {
+      for (auto pre : preUpdateHandlers_) {
+        pre();
+      }
+
       systemManager_->update(dt);
+
+      for (auto post : postUpdateHandlers_) {
+        post();
+      }
+    }
+
+    void addPostUpdateHandler(std::function<void()> callback) {
+      postUpdateHandlers_.push_back(callback);
+    }
+
+    void addPreUpdateHandler(std::function<void()> callback) {
+      preUpdateHandlers_.push_back(callback);
     }
 
   private:
@@ -98,4 +115,6 @@ class Context {
     std::unique_ptr<EntityManager> entityManager_;
     std::unique_ptr<SystemManager> systemManager_;
     std::shared_ptr<InputHandler> inputHandler_;
+    std::vector<std::function<void()>> postUpdateHandlers_;
+    std::vector<std::function<void()>> preUpdateHandlers_;
 };

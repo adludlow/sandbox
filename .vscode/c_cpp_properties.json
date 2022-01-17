@@ -22,13 +22,13 @@
             "name": "Windows",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\DeveloperTools\\freetype-windows-binaries-2.11.1\\include"
+                "C:/DeveloperTools/freetype-windows-binaries-2.11.1/include"
             ],
-            "defines": [],
-            "compilerPath": "C:\\msys64\\mingw64\\bin\\gcc.exe",
+            "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe",
             "cStandard": "c11",
             "cppStandard": "c++20",
-            "intelliSenseMode": "clang-x64",
+            "intelliSenseMode": "msvc-x64",
             "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],

@@ -5,6 +5,8 @@ enum class InputEventType {
   MoveBackwards,
   MoveLeft,
   MoveRight,
+  MoveUp,
+  MoveDown,
   StopMoving,
   RotateClockwise,
   RotateAntiClockwise,

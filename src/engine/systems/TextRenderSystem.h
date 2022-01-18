@@ -109,7 +109,8 @@ class TextRenderSystem : public System {
 
     void init(unsigned int width, unsigned int height, SDL_Window* window, json11::Json config) {
       this->window_ = window;
-      this->projMat_ = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), 0.1f, 500.0f);
+      //this->projMat_ = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height));
+      this->projMat_ = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
 
       std::string shaderDir = config["shader_dir"].string_value();
       this->shader_ = ResourceManager::loadShader(shaderDir + "/text_2d_vert.glsl", shaderDir + "/text_2d_frag.glsl", "textShader");
@@ -130,7 +131,7 @@ class TextRenderSystem : public System {
       glBindVertexArray(0);
 
       // Load fonts
-      loadFont("C:/Users/aludlow/source/gamedev/sandbox/resources/fonts/OCRAEXT.TTF", "OCRAEXT", 24);
+      loadFont("C:/Users/aludlow/source/gamedev/sandbox/resources/fonts/OCRAEXT.TTF", "OCRAEXT", 16);
     }
 
     void update(float dt) override {
@@ -146,24 +147,20 @@ class TextRenderSystem : public System {
         auto& text = ctx->getComponent<Text>(entity);
         this->shader_.setVector3f("textColour", text.colour);
         auto& transform = ctx->getComponent<Transform>(entity);
-        float x = transform.position.x;
-        float y = transform.position.y;
 
         Entity cameraEntity = ctx->getNamedEntity("camera");
         auto& camera = ctx->getComponent<Camera>(cameraEntity);
 
         auto transMat = glm::translate(glm::mat4(1.0f), transform.position);
-        auto scaleMat = glm::scale(glm::mat4(1.0f), transform.scale);
-        auto rotQuat = glm::quat(glm::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 0.0));
-        auto rotMat = glm::toMat4(rotQuat);
         auto proj = glm::perspective(glm::radians(45.0f), ratio_, 0.1f, 500.0f);
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
-        glm::mat4 trans = this->projMat_ * view * transMat * scaleMat;
-
-        unsigned int transformLoc = glGetUniformLocation(this->shader_.id, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-
-        std::map<char, Character> glyphs = this->fonts_[std::make_pair("OCRAEXT", 24)];
+        glm::vec4 clipSpacePos = proj * (view * glm::vec4(transform.position, 1.0f));
+        glm::vec3 ndcSpacePos = glm::vec3(clipSpacePos)/clipSpacePos.w;
+        glm::vec2 windowSpacePos = ((glm::vec2(ndcSpacePos) + 1.0f)/2.0f) * glm::vec2(800, 600);
+        float x = windowSpacePos.x;
+        float y = windowSpacePos.y;
+        this->shader_.setMatrix4("transform", this->projMat_);
+        std::map<char, Character> glyphs = this->fonts_[std::make_pair("OCRAEXT", 16)];
         std::string::const_iterator c;
         for (c = text.text.begin(); c != text.text.end(); c++) {
           Character ch = glyphs[*c];

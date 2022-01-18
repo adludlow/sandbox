@@ -188,14 +188,16 @@ int main (int argc, char** argv) {
   }
 
   Entity camera = ctx->createEntity("camera");
+  glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
+  glm::vec3 cameraDirection = glm::normalize(cameraPosition - glm::vec3(0.0f, 0.0f, 0.0f));
   ctx->addComponent<Camera>(
     camera,
     Camera { 
-      .position = glm::vec3(0.0f, 0.0f, 0.0f),
+      .position = cameraPosition,
       .front = glm::vec3(0.0f, 0.0f, -1.0f),
       .up = glm::vec3(0.0f, 1.0f, 0.0f),
       .right = glm::vec3(1.0f, 0.0f, 0.0f),
-      .direction = glm::vec3(0.0f, 0.0f, 0.0f),
+      .direction = cameraDirection,
       .worldUp = glm::vec3(0.0f, 1.0f, 0.0f),
       .speed = config["camera_speed"].number_value(),
     }

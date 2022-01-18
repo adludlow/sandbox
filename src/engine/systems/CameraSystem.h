@@ -44,15 +44,14 @@ class CameraSystem : public System, public InputObserver {
     void onNotifyInput(const std::vector<InputEvent>& events, float dt) {
       for (auto entity: entities_) {
         auto& camera = ctx->getComponent<Camera>(entity);
-        std::cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << std::endl;
         float velocity = camera.speed * dt;
         for (InputEvent event: events) {
           switch (event.type) {
-            case InputEventType::MoveForwards:
-              camera.position += camera.front * velocity;
+            case InputEventType::MoveUp:
+              camera.position += camera.up * velocity;
               break;
-            case InputEventType::MoveBackwards:
-              camera.position -= camera.front * velocity;
+            case InputEventType::MoveDown:
+              camera.position -= camera.up * velocity;
               break;
             case InputEventType::MoveRight:
               camera.position += camera.right * velocity;
@@ -60,8 +59,14 @@ class CameraSystem : public System, public InputObserver {
             case InputEventType::MoveLeft:
               camera.position -= camera.right * velocity;
               break;
+            case InputEventType::MoveForwards:
+              camera.position += camera.front * velocity;
+              break;
+            case InputEventType::MoveBackwards:
+              camera.position -= camera.front * velocity;
+              break;
             case InputEventType::MouseMove:
-              float xOffset = event.mouseMove.xrel * sensitivity_;
+              /*float xOffset = event.mouseMove.xrel * sensitivity_;
               float yOffset = event.mouseMove.yrel * sensitivity_;
               camera.yaw += xOffset;
               camera.pitch -= yOffset;
@@ -74,7 +79,7 @@ class CameraSystem : public System, public InputObserver {
               camera.front = glm::normalize(front);
               // also re-calculate the Right and Up vector
               camera.right = glm::normalize(glm::cross(camera.front, camera.worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-              camera.up = glm::normalize(glm::cross(camera.right, camera.front));
+              camera.up = glm::normalize(glm::cross(camera.right, camera.front));*/
 
               break;
           }

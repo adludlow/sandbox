@@ -28,13 +28,25 @@ void SdlInputHandler::handleInput(float dt) {
     events.push_back(InputEvent { .type = InputEventType::MoveRight });
   }
   if (keystate[SDL_SCANCODE_UP]) {
-    events.push_back(InputEvent { .type = InputEventType::MoveForwards });
+    events.push_back(InputEvent { .type = InputEventType::MoveUp });
   }
   if (keystate[SDL_SCANCODE_DOWN]) {
-    events.push_back(InputEvent { .type = InputEventType::MoveBackwards });
+    events.push_back(InputEvent { .type = InputEventType::MoveDown });
   }
   if (keystate[SDL_SCANCODE_SPACE]) {
     events.push_back(InputEvent { .type = InputEventType::Shoot });
+  }
+  if (keystate[SDL_SCANCODE_W]) {
+    events.push_back(InputEvent { .type = InputEventType::MoveForwards });
+  }
+  if (keystate[SDL_SCANCODE_S]) {
+    events.push_back(InputEvent { .type = InputEventType::MoveBackwards });
+  }
+  if (keystate[SDL_SCANCODE_A]) {
+    events.push_back(InputEvent { .type = InputEventType::MoveLeft });
+  }
+  if (keystate[SDL_SCANCODE_D]) {
+    events.push_back(InputEvent { .type = InputEventType::MoveRight });
   }
   while (SDL_PollEvent(&e) != 0) {
     switch (e.type) {

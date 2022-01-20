@@ -98,7 +98,7 @@ class GlRenderSystem : public System {
         auto scaleMat = glm::scale(glm::mat4(1.0f), transform.scale);
         auto rotQuat = glm::quat(glm::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 0.0));
         auto rotMat = glm::toMat4(rotQuat);
-        auto proj = glm::perspective(glm::radians(45.0f), ratio_, 0.1f, 500.0f);
+        auto proj = glm::perspective(glm::radians((float)camera.fov), ratio_, 0.1f, 100.0f);
 
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
         glm::mat4 trans = proj * view * transMat * rotMat * scaleMat;

@@ -11,6 +11,7 @@ struct Camera {
   vec3 right;
   vec3 direction;
   vec3 worldUp;
+  double fov;
   double speed { 0.01 };
   double yaw { 0.0 };
   double pitch { 0.0 };

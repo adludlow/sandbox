@@ -117,7 +117,7 @@ int main (int argc, char** argv) {
     renderSystem->init(window, config);
   }
 
-  auto playerControlSystem = ctx->registerSystem<PlayerControlSystem>();
+  /*auto playerControlSystem = ctx->registerSystem<PlayerControlSystem>();
   {
     Signature signature;
     signature.set(ctx->getComponentType<Transform>());
@@ -125,7 +125,7 @@ int main (int argc, char** argv) {
 
     playerControlSystem->init();
     inputHandler->addObserver(playerControlSystem.get());
-  }
+  }*/
 
   auto textRenderSystem = ctx->registerSystem<TextRenderSystem>();
   {
@@ -190,6 +190,8 @@ int main (int argc, char** argv) {
   Entity camera = ctx->createEntity("camera");
   glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
   glm::vec3 cameraDirection = glm::normalize(cameraPosition - glm::vec3(0.0f, 0.0f, 0.0f));
+  glm::vec3 cameraRight = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), cameraDirection));
+  glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
   ctx->addComponent<Camera>(
     camera,
     Camera { 
@@ -197,8 +199,9 @@ int main (int argc, char** argv) {
       .front = glm::vec3(0.0f, 0.0f, -1.0f),
       .up = glm::vec3(0.0f, 1.0f, 0.0f),
       .right = glm::vec3(1.0f, 0.0f, 0.0f),
-      .direction = cameraDirection,
+      .direction = glm::vec3(0.0f, 0.0f, 0.0f),
       .worldUp = glm::vec3(0.0f, 1.0f, 0.0f),
+      .fov = 45.0f,
       .speed = config["camera_speed"].number_value(),
     }
   );

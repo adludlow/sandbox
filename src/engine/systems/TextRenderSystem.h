@@ -156,37 +156,39 @@ class TextRenderSystem : public System {
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
         glm::vec4 clipSpacePos = proj * (view * glm::vec4(transform.position, 1.0f));
         glm::vec3 ndcSpacePos = glm::vec3(clipSpacePos)/clipSpacePos.w;
-        glm::vec2 windowSpacePos = ((glm::vec2(ndcSpacePos) + 1.0f)/2.0f) * glm::vec2(1600, 900);
-        float x = windowSpacePos.x;
-        float y = windowSpacePos.y;
-        this->shader_.setMatrix4("transform", this->projMat_);
-        std::map<char, Character> glyphs = this->fonts_[std::make_pair("OCRAEXT", 24)];
-        std::string::const_iterator c;
-        for (c = text.text.begin(); c != text.text.end(); c++) {
-          Character ch = glyphs[*c];
+        if (ndcSpacePos.x >= -1.0f && ndcSpacePos.x <= 1.0f && ndcSpacePos.y >= -1.0f && ndcSpacePos.y <= 1.0f && ndcSpacePos.z >= -1.0f && ndcSpacePos.z <= 1.0f) {
+          glm::vec2 windowSpacePos = ((glm::vec2(ndcSpacePos) + 1.0f)/2.0f) * glm::vec2(1600, 900);
+          float x = windowSpacePos.x;
+          float y = windowSpacePos.y;
+          this->shader_.setMatrix4("transform", this->projMat_);
+          std::map<char, Character> glyphs = this->fonts_[std::make_pair("OCRAEXT", 24)];
+          std::string::const_iterator c;
+          for (c = text.text.begin(); c != text.text.end(); c++) {
+            Character ch = glyphs[*c];
 
-          float xpos = x + ch.bearing.x;
-          float ypos = y + (glyphs['H'].bearing.y - ch.bearing.y);
-          float w = ch.size.x;
-          float h = ch.size.y;
-          float vertices[6][6] = {
-            { xpos,     ypos + h, 0.0f, 1.0f, 0.0f, 0.0f },
-            { xpos + w, ypos,     0.0f, 1.0f, 1.0f, 1.0f },
-            { xpos,     ypos,     0.0f, 1.0f, 0.0f, 1.0f },
-            
-            { xpos,     ypos + h, 0.0f, 1.0f, 0.0f, 0.0f },
-            { xpos + w, ypos + h, 0.0f, 1.0f, 1.0f, 0.0f },
-            { xpos + w, ypos,     0.0f, 1.0f, 1.0f, 1.0f }
-          };
+            float xpos = x + ch.bearing.x;
+            float ypos = y + (glyphs['H'].bearing.y - ch.bearing.y);
+            float w = ch.size.x;
+            float h = ch.size.y;
+            float vertices[6][6] = {
+              { xpos,     ypos + h, 0.0f, 1.0f, 0.0f, 0.0f },
+              { xpos + w, ypos,     0.0f, 1.0f, 1.0f, 1.0f },
+              { xpos,     ypos,     0.0f, 1.0f, 0.0f, 1.0f },
+              
+              { xpos,     ypos + h, 0.0f, 1.0f, 0.0f, 0.0f },
+              { xpos + w, ypos + h, 0.0f, 1.0f, 1.0f, 0.0f },
+              { xpos + w, ypos,     0.0f, 1.0f, 1.0f, 1.0f }
+            };
 
-          glBindTexture(GL_TEXTURE_2D, ch.textureId);
-          // Update contents of VBO memory
-          glBindBuffer(GL_ARRAY_BUFFER, this->glVbo_);
-          glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-          glBindBuffer(GL_ARRAY_BUFFER, 0);
-          // Render quad
-          glDrawArrays(GL_TRIANGLES, 0, 6);
-          x += (ch.advance >> 6);
+            glBindTexture(GL_TEXTURE_2D, ch.textureId);
+            // Update contents of VBO memory
+            glBindBuffer(GL_ARRAY_BUFFER, this->glVbo_);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            // Render quad
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            x += (ch.advance >> 6);
+          }
         }
       }
       glBindBuffer(GL_ARRAY_BUFFER, 0);

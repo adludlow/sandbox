@@ -8,8 +8,10 @@
 namespace util::csv {
   class CSVRow {
     public:
-      std::string_view operator[](std::size_t index) const {
-        return std::string_view(&m_line[m_data[index] + 1], m_data[index + 1] - (m_data[index] + 1));
+      std::string operator[](std::size_t index) const {
+        std::string str = std::string(&m_line[m_data[index] + 1], m_data[index + 1] - (m_data[index] + 1));
+        str.erase(str.find_last_not_of(" \n\r\t")+1);
+        return str;
       }
 
       std::size_t size() const {

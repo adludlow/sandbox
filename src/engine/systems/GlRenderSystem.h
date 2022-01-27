@@ -14,10 +14,11 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <glm/gtc/type_ptr.hpp>
+//#include <glm/gtc/type_ptr.hpp>
 
 #include "../core/System.h"
 #include "../core/Shader.h"
@@ -53,7 +54,7 @@ class GlRenderSystem : public System {
       window_ = window;
       int width, height = 0;
       SDL_GetWindowSize(window_, &width, &height);
-      ratio_ = width/height;
+      this->ratio_ = (float)width/(float)height;
 
       std::string shaderDir = config["shader_dir"].string_value();
       this->shader_ = ResourceManager::loadShader(shaderDir + "/vertex.glsl", shaderDir + "/fragment.glsl", "geomShader");

@@ -5,7 +5,7 @@
 using namespace glm;
 
 struct Transform {
-  vec3 position;
-  vec3 rotation;
-  vec3 scale;  
+  vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+  vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+  vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 };

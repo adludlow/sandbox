@@ -28,10 +28,12 @@ bool glewExperimental = true;
 #include "engine/components/Geometry.h"
 #include "engine/components/Camera.h"
 #include "engine/components/Text.h"
+#include "engine/components/Grid.h"
 #include "engine/systems/GlRenderSystem.h"
 #include "engine/systems/PlayerControlSystem.h"
 #include "engine/systems/CameraSystem.h"
 #include "engine/systems/TextRenderSystem.h"
+#include "engine/systems/GridSystem.h"
 #include "engine/core/input/SdlInputHandler.h"
 
 std::shared_ptr<Context> ctx = std::make_shared<Context>();
@@ -96,6 +98,7 @@ int main (int argc, char** argv) {
   ctx->registerComponent<Geometry>();
   ctx->registerComponent<Camera>();
   ctx->registerComponent<Text>();
+  ctx->registerComponent<Grid>();
 
   auto cameraSystem = ctx->registerSystem<CameraSystem>();
   {
@@ -135,6 +138,16 @@ int main (int argc, char** argv) {
     ctx->setSystemSignature<TextRenderSystem>(signature);
 
     textRenderSystem->init(width, height, window, config);
+  }
+
+  auto gridSystem = ctx->registerSystem<GridSystem>();
+  {
+    Signature signature;
+    signature.set(ctx->getComponentType<Grid>());
+    signature.set(ctx->getComponentType<Transform>());
+    ctx->setSystemSignature<GridSystem>(signature);
+
+    gridSystem->init(window, config);
   }
 
   Geometry geom = util::importShape(config["shapefile"].string_value());
@@ -182,16 +195,25 @@ int main (int argc, char** argv) {
       Text {
         .text = i.name,
         .fontsize = 24,
-        .colour = glm::vec3(1.0f)
+        .colour = glm::vec3(2.0f)
       }
     );
   }
 
+  Entity coordGridEntity = ctx->createEntity();
+  Grid coordGrid = createGrid(10, 10, 1.0f);
+  ctx->addComponent<Grid>(
+    coordGridEntity,
+    coordGrid
+  );
+
+  ctx->addComponent<Transform>(
+    coordGridEntity,
+    Transform {}
+  );
+
   Entity camera = ctx->createEntity("camera");
   glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
-  glm::vec3 cameraDirection = glm::normalize(cameraPosition - glm::vec3(0.0f, 0.0f, 0.0f));
-  glm::vec3 cameraRight = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), cameraDirection));
-  glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
   ctx->addComponent<Camera>(
     camera,
     Camera { 

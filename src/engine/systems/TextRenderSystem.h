@@ -114,7 +114,7 @@ class TextRenderSystem : public System {
 
       std::string shaderDir = config["shader_dir"].string_value();
       this->shader_ = ResourceManager::loadShader(shaderDir + "/text_2d_vert.glsl", shaderDir + "/text_2d_frag.glsl", "textShader");
-      ratio_ = width/height;
+      this->ratio_ = (float)width/(float)height;
       //this->shader_.setMatrix4("projection", glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f), true);
       this->shader_.setInteger("text", 0);
 

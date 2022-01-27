@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GEOMETRY_H
+#define GEOMETRY_H
 
 #include <glm/vec4.hpp>
 #include <vector>
@@ -16,3 +17,5 @@ struct Geometry {
     }
   }
 };
+
+#endif //GEOMETRY_H

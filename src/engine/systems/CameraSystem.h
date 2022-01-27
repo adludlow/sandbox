@@ -76,6 +76,7 @@ class CameraSystem : public System, public InputObserver {
               camera.position -= camera.front * velocity;
               break;
             case InputEventType::MouseMove:
+            /*
               float xOffset = event.mouseMove.xrel * sensitivity_;
               float yOffset = event.mouseMove.yrel * sensitivity_;
               camera.yaw += xOffset;
@@ -90,7 +91,7 @@ class CameraSystem : public System, public InputObserver {
               // also re-calculate the Right and Up vector
               camera.right = glm::normalize(glm::cross(camera.front, camera.worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
               camera.up = glm::normalize(glm::cross(camera.right, camera.front));
-
+              */
               break;
           }
         }

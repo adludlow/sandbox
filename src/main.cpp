@@ -201,7 +201,7 @@ int main (int argc, char** argv) {
   }
 
   Entity coordGridEntity = ctx->createEntity();
-  Grid coordGrid = createGrid(10, 10, 1.0f);
+  Grid coordGrid = createGrid(50, 50, 1.0f);
   ctx->addComponent<Grid>(
     coordGridEntity,
     coordGrid
@@ -209,7 +209,23 @@ int main (int argc, char** argv) {
 
   ctx->addComponent<Transform>(
     coordGridEntity,
-    Transform {}
+    Transform {
+      .position = glm::vec3(-25.0f, -25.0f, 0.0f)
+    }
+  );
+
+  Entity coordGridEntity2 = ctx->createEntity();
+  Grid coordGrid2 = createGrid(50, 50, 1.0f);
+  ctx->addComponent<Grid>(
+    coordGridEntity2,
+    coordGrid2
+  );
+
+  ctx->addComponent<Transform>(
+    coordGridEntity2,
+    Transform {
+      .position = glm::vec3(-25.0f, -25.0f, -10.0f)
+    }
   );
 
   Entity camera = ctx->createEntity("camera");

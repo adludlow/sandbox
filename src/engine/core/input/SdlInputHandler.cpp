@@ -49,7 +49,38 @@ void SdlInputHandler::handleInput(float dt) {
     events.push_back(InputEvent { .type = InputEventType::MoveRight });
   }
   while (SDL_PollEvent(&e) != 0) {
+    InputEvent inputEvent;
     switch (e.type) {
+      case SDL_MOUSEBUTTONDOWN:
+        switch (e.button.button) {
+          case SDL_BUTTON_LEFT:
+            inputEvent.type = InputEventType::LeftMouseButtonDown;
+            break;
+          case SDL_BUTTON_RIGHT:
+            inputEvent.type = InputEventType::RightMouseButtonDown;
+            break;
+        };
+        inputEvent.mouseLocation = {
+          .x = e.button.x,
+          .y = e.button.y
+        };
+        events.push_back(inputEvent);
+        break;
+      case SDL_MOUSEBUTTONUP:
+        switch (e.button.button) {
+          case SDL_BUTTON_LEFT:
+            inputEvent.type = InputEventType::LeftMouseButtonUp;
+            break;
+          case SDL_BUTTON_RIGHT:
+            inputEvent.type = InputEventType::RightMouseButtonUp;
+            break;
+        };
+        inputEvent.mouseLocation = {
+          .x = e.button.x,
+          .y = e.button.y
+        };
+        events.push_back(inputEvent);
+        break;
       case SDL_QUIT:
         events.push_back(InputEvent { .type = InputEventType::QuitToDesktop });
         break;

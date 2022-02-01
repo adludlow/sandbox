@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INPUT_EVENT_H
+#define INPUT_EVENT_H
 
 enum class InputEventType {
   MoveForwards,
@@ -14,7 +15,11 @@ enum class InputEventType {
   Shoot,
   StopShoot,
   QuitToDesktop,
-  MouseMove
+  MouseMove,
+  RightMouseButtonDown,
+  RightMouseButtonUp,
+  LeftMouseButtonUp,
+  LeftMouseButtonDown
 };
 
 struct InputEvent {
@@ -22,4 +27,10 @@ struct InputEvent {
   struct {
     int x, y, xrel, yrel;
   } mouseMove;
+
+  struct {
+    int x, y;
+  } mouseLocation;
 };
+
+#endif //INPUT_EVENT_H

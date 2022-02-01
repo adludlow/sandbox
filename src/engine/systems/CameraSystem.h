@@ -16,6 +16,11 @@ extern std::shared_ptr<Context> ctx;
 
 class CameraSystem : public System, public InputObserver {
   public:
+    CameraSystem() {
+      rightMouseButtonDown = false;
+      leftMouseButtonDown = false;
+    }
+
     std::set<Entity> entities() override {
       return entities_;
     }
@@ -75,23 +80,35 @@ class CameraSystem : public System, public InputObserver {
               //}
               camera.position -= camera.front * velocity;
               break;
+            case InputEventType::LeftMouseButtonDown:
+              leftMouseButtonDown = true;
+              break;
+            case InputEventType::LeftMouseButtonUp:
+              leftMouseButtonDown = false;
+              break;
+            case InputEventType::RightMouseButtonDown:
+              rightMouseButtonDown = true;
+              break;
+            case InputEventType::RightMouseButtonUp:
+              rightMouseButtonDown = false;
+              break;
             case InputEventType::MouseMove:
-            /*
-              float xOffset = event.mouseMove.xrel * sensitivity_;
-              float yOffset = event.mouseMove.yrel * sensitivity_;
-              camera.yaw += xOffset;
-              camera.pitch -= yOffset;
+              if (rightMouseButtonDown) {
+                float xOffset = event.mouseMove.xrel * sensitivity_;
+                float yOffset = event.mouseMove.yrel * sensitivity_;
+                camera.yaw += xOffset;
+                camera.pitch -= yOffset;
 
-              // calculate the new Front vector
-              glm::vec3 front;
-              front.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-              front.y = sin(glm::radians(camera.pitch));
-              front.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-              camera.front = glm::normalize(front);
-              // also re-calculate the Right and Up vector
-              camera.right = glm::normalize(glm::cross(camera.front, camera.worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-              camera.up = glm::normalize(glm::cross(camera.right, camera.front));
-              */
+                // calculate the new Front vector
+                glm::vec3 front;
+                front.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+                front.y = sin(glm::radians(camera.pitch));
+                front.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+                camera.front = glm::normalize(front);
+                // also re-calculate the Right and Up vector
+                camera.right = glm::normalize(glm::cross(camera.front, camera.worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+                camera.up = glm::normalize(glm::cross(camera.right, camera.front));
+              }
               break;
           }
         }
@@ -101,5 +118,7 @@ class CameraSystem : public System, public InputObserver {
   private:
     std::set<Entity> entities_;
     std::string id_;
-    float sensitivity_ { 0.01f };
+    float sensitivity_ { 0.1f };
+    bool rightMouseButtonDown;
+    bool leftMouseButtonDown;
 };

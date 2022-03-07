@@ -99,7 +99,7 @@ class GlRenderSystem : public System {
         auto scaleMat = glm::scale(glm::mat4(1.0f), transform.scale);
         auto rotQuat = glm::quat(glm::vec4(transform.rotation.x, transform.rotation.y, transform.rotation.z, 0.0));
         auto rotMat = glm::toMat4(rotQuat);
-        auto proj = glm::perspective(glm::radians((float)camera.fov), ratio_, 0.1f, 100.0f);
+        auto proj = glm::perspective(glm::radians((float)camera.fov), ratio_, 0.1f, 900.0f);
 
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
         glm::mat4 trans = proj * view * transMat * rotMat * scaleMat;
@@ -112,7 +112,7 @@ class GlRenderSystem : public System {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glEbo_);
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(uint) * geometry.indices.size(), geometry.indices.data());
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glDrawElements(GL_TRIANGLES, geometry.indices.size(), GL_UNSIGNED_INT, 0);
       }
 

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CAMERA_SYSTEM_H
+#define CAMERA_SYSTEM_H
 
 #include <memory>
 #include <string>
@@ -122,3 +123,5 @@ class CameraSystem : public System, public InputObserver {
     bool rightMouseButtonDown;
     bool leftMouseButtonDown;
 };
+
+#endif // CAMERA_SYSTEM_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ENTITY_MANAGER_H
+#define ENTITY_MANAGER_H
 
 #include <array>
 #include <queue>
@@ -62,7 +63,9 @@ class EntityManager {
 
   private:
     std::queue<Entity> availableEntities_{};
-    std::array<Signature, MAX_ENTITIES> signatures_{};
+    std::unordered_map<Entity, Signature> signatures_{};
     uint32_t activeEntityCount_{};
     std::unordered_map<std::string, Entity> namedEntities_{};
 };
+
+#endif // ENTITY_MANAGER_H

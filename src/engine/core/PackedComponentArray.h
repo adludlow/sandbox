@@ -52,7 +52,8 @@ class PackedComponentArray : public ComponentArray {
     }
 
   private:
-    std::array<T, MAX_ENTITIES> componentArray_{};
+    //std::array<T, MAX_ENTITIES> componentArray_{};
+    std::unordered_map<size_t, T> componentArray_{};
     std::unordered_map<Entity, size_t> entityToIndexMap_{};
     std::unordered_map<size_t, Entity> indexToEntityMap_{};
     size_t size_ = 0;

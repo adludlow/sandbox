@@ -27,6 +27,10 @@ if(NOT BOOST_HEADERS)
   set(BOOST_HEADERS "/usr/include/boost")
 endif()
 
+if(NOT FREETYPE_HEADERS)
+  set(FREETYPE_HEADERS "/usr/include/freetype2")
+endif()
+
 if(NOT GLM_HEADERS)
   set(GLM_HEADERS)
 endif()
@@ -41,6 +45,7 @@ add_executable(
   src/engine/Timer.cpp
   src/engine/core/GameLoop.cpp
   src/engine/core/ResourceManager.cpp
+  src/engine/systems/StarDataSystem.cpp
   src/util/import.cpp
   src/util/random.cpp
   src/util/uuid.cpp
@@ -53,6 +58,8 @@ if(UNIX)
   set(SDLMAIN_LIB /usr/lib/libSDL2_image.so)
   set(GLEW_LIB /usr/lib/libGLEW.so)
   set(GL_LIB /usr/lib/libGL.so)
+  set(FREETYPE_LIB /usr/lib/libfreetype.so)
+  set(SQLITE_LIB /usr/lib/libsqlite3.so)
 elseif(WIN32)
   set(GL_LIB "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22000.0/um/x64/OpenGL32.Lib")
   set(BCRYPT_LIB "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22000.0/um/x64/bcrypt.lib")
@@ -61,7 +68,7 @@ elseif(WIN32)
   set(FREETYPE_LIB "C:/DeveloperTools/freetype-windows-binaries-2.11.1/release dll/win64/freetype.lib")
   set(GLEW_LIB "C:/DeveloperTools/glew-2.1.0/lib/Release/x64/glew32.lib")
 endif()
-target_link_libraries(sandbox ${SDL_LIB} ${SDLMAIN_LIB} ${GLEW_LIB} ${BCRYPT_LIB} ${GL_LIB} ${FREETYPE_LIB})
+target_link_libraries(sandbox ${SDL_LIB} ${SDLMAIN_LIB} ${GLEW_LIB} ${BCRYPT_LIB} ${GL_LIB} ${FREETYPE_LIB} ${SQLITE_LIB})
 
 install(TARGETS sandbox RUNTIME DESTINATION ${BIN_DIR})
 

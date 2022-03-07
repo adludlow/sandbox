@@ -129,9 +129,6 @@ class TextRenderSystem : public System {
       glEnableVertexAttribArray(1);
       glBindBuffer(GL_ARRAY_BUFFER, 0);
       glBindVertexArray(0);
-
-      // Load fonts
-      loadFont("C:/Users/aludlow/source/gamedev/sandbox/resources/fonts/OCRAEXT.TTF", "OCRAEXT", 24);
     }
 
     void update(float dt) override {

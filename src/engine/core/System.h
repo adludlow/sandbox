@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SYSTEM_H
+#define SYSTEM_H
 
 #include <set>
 
@@ -12,3 +13,5 @@ class System {
     virtual void deleteEntity(Entity entity) = 0;
     virtual void update(float dt) = 0;
 };
+
+#endif // SYSTEM_H

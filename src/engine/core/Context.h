@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CONTEXT_H
+#define CONTEXT_H
 
 #include <memory>
 #include <functional>
@@ -118,3 +119,5 @@ class Context {
     std::vector<std::function<void()>> postUpdateHandlers_;
     std::vector<std::function<void()>> preUpdateHandlers_;
 };
+
+#endif // CONTEXT_H

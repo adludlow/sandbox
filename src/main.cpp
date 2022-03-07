@@ -34,6 +34,7 @@ bool glewExperimental = true;
 #include "engine/systems/CameraSystem.h"
 #include "engine/systems/TextRenderSystem.h"
 #include "engine/systems/GridSystem.h"
+#include "engine/systems/StarDataSystem.h"
 #include "engine/core/input/SdlInputHandler.h"
 
 std::shared_ptr<Context> ctx = std::make_shared<Context>();
@@ -100,6 +101,14 @@ int main (int argc, char** argv) {
   ctx->registerComponent<Text>();
   ctx->registerComponent<Grid>();
 
+  auto starDataSystem = ctx->registerSystem<StarDataSystem>();
+  {
+    Signature signature;
+    signature.set(ctx->getComponentType<Camera>());
+    ctx->setSystemSignature<StarDataSystem>(signature);
+    starDataSystem->init(config["starDatabase"].string_value());
+  }
+
   auto cameraSystem = ctx->registerSystem<CameraSystem>();
   {
     Signature signature;
@@ -138,6 +147,7 @@ int main (int argc, char** argv) {
     ctx->setSystemSignature<TextRenderSystem>(signature);
 
     textRenderSystem->init(width, height, window, config);
+    textRenderSystem->loadFont("/home/aludlow/projects/gamedev/sandbox/resources/fonts/OCRAEXT.TTF", "OCRAEXT", 24);
   }
 
   auto gridSystem = ctx->registerSystem<GridSystem>();
@@ -190,46 +200,50 @@ int main (int argc, char** argv) {
       object,
       geom
     );
-    ctx->addComponent<Text>(
-      object,
-      Text {
-        .text = i.name,
-        .fontsize = 24,
-        .colour = glm::vec3(2.0f)
+    if (config["starNames"].bool_value()) {
+      ctx->addComponent<Text>(
+        object,
+        Text {
+          .text = i.name,
+          .fontsize = 24,
+          .colour = glm::vec3(2.0f)
+        }
+      );
+    }
+  }
+
+  if (config["grid"].bool_value()) {
+    Entity coordGridEntity = ctx->createEntity();
+    Grid coordGrid = createGrid(50, 50, 1.0f);
+    ctx->addComponent<Grid>(
+      coordGridEntity,
+      coordGrid
+    );
+
+    ctx->addComponent<Transform>(
+      coordGridEntity,
+      Transform {
+        .position = glm::vec3(-25.0f, -25.0f, 0.0f)
+      }
+    );
+
+    Entity coordGridEntity2 = ctx->createEntity();
+    Grid coordGrid2 = createGrid(50, 50, 1.0f);
+    ctx->addComponent<Grid>(
+      coordGridEntity2,
+      coordGrid2
+    );
+
+    ctx->addComponent<Transform>(
+      coordGridEntity2,
+      Transform {
+        .position = glm::vec3(-25.0f, -25.0f, -10.0f)
       }
     );
   }
 
-  Entity coordGridEntity = ctx->createEntity();
-  Grid coordGrid = createGrid(50, 50, 1.0f);
-  ctx->addComponent<Grid>(
-    coordGridEntity,
-    coordGrid
-  );
-
-  ctx->addComponent<Transform>(
-    coordGridEntity,
-    Transform {
-      .position = glm::vec3(-25.0f, -25.0f, 0.0f)
-    }
-  );
-
-  Entity coordGridEntity2 = ctx->createEntity();
-  Grid coordGrid2 = createGrid(50, 50, 1.0f);
-  ctx->addComponent<Grid>(
-    coordGridEntity2,
-    coordGrid2
-  );
-
-  ctx->addComponent<Transform>(
-    coordGridEntity2,
-    Transform {
-      .position = glm::vec3(-25.0f, -25.0f, -10.0f)
-    }
-  );
-
   Entity camera = ctx->createEntity("camera");
-  glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
+  glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
   ctx->addComponent<Camera>(
     camera,
     Camera { 
@@ -237,10 +251,11 @@ int main (int argc, char** argv) {
       .front = glm::vec3(0.0f, 0.0f, -1.0f),
       .up = glm::vec3(0.0f, 1.0f, 0.0f),
       .right = glm::vec3(1.0f, 0.0f, 0.0f),
-      .direction = glm::vec3(0.0f, 0.0f, 0.0f),
+      .direction = glm::vec3(0.0f, 0.0f, -1.0f),
       .worldUp = glm::vec3(0.0f, 1.0f, 0.0f),
       .fov = 45.0f,
       .speed = config["camera_speed"].number_value(),
+      .yaw = -90.0
     }
   );
 

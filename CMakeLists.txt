@@ -46,6 +46,7 @@ add_executable(
   src/engine/core/GameLoop.cpp
   src/engine/core/ResourceManager.cpp
   src/engine/systems/StarDataSystem.cpp
+  src/engine/components/Camera.cpp
   src/util/import.cpp
   src/util/random.cpp
   src/util/uuid.cpp

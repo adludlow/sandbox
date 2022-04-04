@@ -16,3 +16,6 @@ struct Camera {
   double yaw { 0.0 };
   double pitch { 0.0 };
 };
+
+bool operator == (const Camera& c1, const Camera& c2);
+bool operator != (const Camera& c1, const Camera& c2);

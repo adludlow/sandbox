@@ -7,6 +7,7 @@
 
 #include "../core/Context.h"
 #include "../core/System.h"
+#include "../components/Camera.h"
 
 extern std::shared_ptr<Context> ctx;
 
@@ -24,7 +25,10 @@ class StarDataSystem : public System {
 
   private:
     std::set<Entity> entities_;
-    sqlite3 *db;
+    sqlite3 *db_;
+    Camera lastCameraLocation_;
+
+    void setLastCameraLocation(const Camera& camera);
     static int queryCallback(void *notRequired, int numCol, char** rowData, char** colNames);
 };
 
